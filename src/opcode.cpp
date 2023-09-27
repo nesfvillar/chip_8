@@ -2,499 +2,294 @@
 
 using namespace chip_8;
 
-// 0NNN
-class OpCallMCRoutine : public IOpcode
+class Opcode : public IOpcode
 {
 public:
-    OpCallMCRoutine(size_t location) : _location(location) {}
+    Opcode(NibbleSpan nibbles) : _nibbles(nibbles) {}
 
+protected:
+    std::span<unsigned, OPCODE_SIZE> _nibbles;
+};
+
+// 0NNN
+struct OpCallMCRoutine : public Opcode
+{
     void execute(Cpu &cpu) const override
     {
+        auto location = _nibbles[3] + _nibbles[2] * 0x10 + _nibbles[1] * 0x100;
     }
-
-private:
-    size_t _location;
 };
 
 // 00E0
-class OpClearScreen : public IOpcode
+struct OpClearScreen : public Opcode
 {
-public:
     void execute(Cpu &cpu) const override
     {
     }
 };
 
 // 00EE
-class OpReturnSubroutine : public IOpcode
+struct OpReturnSubroutine : public Opcode
 {
-public:
     void execute(Cpu &cpu) const override
     {
     }
 };
 
 // 1NNN
-class OpJump : public IOpcode
+struct OpJump : public Opcode
 {
-public:
-    OpJump(size_t location) : _location(location) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    size_t _location;
 };
 
 // 2NNN
-class OpCallSubroutine : public IOpcode
+struct OpCallSubroutine : public Opcode
 {
-public:
-    OpCallSubroutine(size_t location) : _location(location) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    size_t _location;
 };
 
 // 3XNN
-class OpSkipIfEqValue : public IOpcode
+struct OpSkipIfEqValue : public Opcode
 {
-public:
-    OpSkipIfEqValue(unsigned x, unsigned value) : _x(x), _value(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _value;
 };
 
 // 4XNN
-class OpSkipIfNotEqValue : public IOpcode
+struct OpSkipIfNotEqValue : public Opcode
 {
-public:
-    OpSkipIfNotEqValue(unsigned x, unsigned value) : _x(x), _value(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _value;
 };
 
 // 5XY0
-class OpSkipIfEqRegister : public IOpcode
+struct OpSkipIfEqRegister : public Opcode
 {
-public:
-    OpSkipIfEqRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 6XNN
-class OpSetRegisterToValue : public IOpcode
+struct OpSetRegisterToValue : public Opcode
 {
-public:
-    OpSetRegisterToValue(unsigned x, unsigned value) : _x(x), _value(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _value;
 };
 
 // 7XNN
-class OpAddRegisterValue : public IOpcode
+struct OpAddRegisterValue : public Opcode
 {
-public:
-    OpAddRegisterValue(unsigned x, unsigned value) : _x(x), _value(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _value;
 };
 
 // 8XY0
-class OpSetRegisterToRegister : public IOpcode
+struct OpSetRegisterToRegister : public Opcode
 {
-public:
-    OpSetRegisterToRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY1
-class OpOr : public IOpcode
+struct OpOr : public Opcode
 {
-public:
-    OpOr(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY2
-class OpAnd : public IOpcode
+struct OpAnd : public Opcode
 {
-public:
-    OpAnd(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY3
-class OpXor : public IOpcode
+struct OpXor : public Opcode
 {
-public:
-    OpXor(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY4
-class OpAddRegisterRegister : public IOpcode
+struct OpAddRegisterRegister : public Opcode
 {
-public:
-    OpAddRegisterRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY5
-class OpSubtractRegisterRegister : public IOpcode
+struct OpSubtractRegisterRegister : public Opcode
 {
-public:
-    OpSubtractRegisterRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY6
-class OpShiftRight : public IOpcode
+struct OpShiftRight : public Opcode
 {
-public:
-    OpShiftRight(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XY7
-class OpReverseSubtractRegisterRegister : public IOpcode
+struct OpReverseSubtractRegisterRegister : public Opcode
 {
-public:
-    OpReverseSubtractRegisterRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 8XYE
-class OpShiftLeft : public IOpcode
+struct OpShiftLeft : public Opcode
 {
-public:
-    OpShiftLeft(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // 9XY0
-class OpSkipIfNotEqRegister : public IOpcode
+struct OpSkipIfNotEqRegister : public Opcode
 {
-public:
-    OpSkipIfNotEqRegister(unsigned x, unsigned y) : _x(x), _y(y) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
 };
 
 // ANNN
-class OpSet : public IOpcode
+struct OpSet : public Opcode
 {
-public:
-    OpSet(size_t value) : _location(value) {}
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    size_t _location;
 };
 
 // BNNN
-class OpJumpPlus : public IOpcode
+struct OpJumpPlus : public Opcode
 {
-public:
-    OpJumpPlus(size_t value) : _location(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    size_t _location;
 };
 
 // CXNN
-class OpRandom : public IOpcode
+struct OpRandom : public Opcode
 {
-public:
-    OpRandom(unsigned x, unsigned value) : _x(x), _value(value) {}
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _value;
 };
 
 // DXYN
-class OpDraw : public IOpcode
+struct OpDraw : public Opcode
 {
-    OpDraw(unsigned x, unsigned y, unsigned value) : _x(x), _y(y), _value(value) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
-    unsigned _y;
-    unsigned _value;
 };
 
 // EX9E
-class OpSkipIfKeyPressed : public IOpcode
+struct OpSkipIfKeyPressed : public Opcode
 {
-public:
-    OpSkipIfKeyPressed(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // EXA1
-class OpSkipIfKeyNotPressed : public IOpcode
+struct OpSkipIfKeyNotPressed : public Opcode
 {
-public:
-    OpSkipIfKeyNotPressed(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX07
-class OpGetDelay : public IOpcode
+struct OpGetDelay : public Opcode
 {
-public:
-    OpGetDelay(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX0A
-class OpGetKeyBlocking : public IOpcode
+struct OpGetKeyBlocking : public Opcode
 {
-public:
-    OpGetKeyBlocking(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX15
-class OpSetDelay : public IOpcode
+struct OpSetDelay : public Opcode
 {
-public:
-    OpSetDelay(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX18
-class OpSetSound : public IOpcode
+struct OpSetSound : public Opcode
 {
-public:
-    OpSetSound(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX1E
-class OpAddToAdress : public IOpcode
+struct OpAddToAdress : public Opcode
 {
-public:
-    OpAddToAdress(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX29
-class OpSetAdressToSprite : public IOpcode
+struct OpSetAdressToSprite : public Opcode
 {
-public:
-    OpSetAdressToSprite(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX33
-class OpStoreBCDAtAdress : public IOpcode
+struct OpStoreBCDAtAdress : public Opcode
 {
-public:
-    OpStoreBCDAtAdress(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX55
-class OpDumpRegisters : public IOpcode
+struct OpDumpRegisters : public Opcode
 {
-public:
-    OpDumpRegisters(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 // FX65
-class OpLoadRegisters : public IOpcode
+struct OpLoadRegisters : public Opcode
 {
-public:
-    OpLoadRegisters(unsigned x) : _x(x) {}
-
     void execute(Cpu &cpu) const override
     {
     }
-
-private:
-    unsigned _x;
 };
 
 std::unique_ptr<const IOpcode> opcode_factory(std::span<uint8_t, OPCODE_SIZE> nibbles)
