@@ -7,6 +7,8 @@
 
 namespace chip_8
 {
+    constexpr size_t OPCODE_SIZE = 4;
+    using NibbleSpan = std::span<unsigned, OPCODE_SIZE>;
 
     struct IOpcode
     {
@@ -14,7 +16,5 @@ namespace chip_8
         virtual ~IOpcode() = default;
     };
 
-    constexpr size_t OPCODE_SIZE = 4;
-    using NibbleSpan = std::span<unsigned, OPCODE_SIZE>;
     std::unique_ptr<const IOpcode> opcode_factory(NibbleSpan nibbles);
 }
