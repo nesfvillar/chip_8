@@ -25,6 +25,7 @@ struct OpClearScreen : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        cpu.get_ui().clear_screen();
     }
 };
 
@@ -41,6 +42,8 @@ struct OpJump : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto location = _nibbles[3] + _nibbles[2] * 0x10 + _nibbles[1] * 0x100;
+        cpu.set_register(PC, location);
     }
 };
 
@@ -105,6 +108,9 @@ struct OpOr : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], x | y);
     }
 };
 
@@ -113,6 +119,9 @@ struct OpAnd : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], x & y);
     }
 };
 
@@ -121,6 +130,9 @@ struct OpXor : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], x ^ y);
     }
 };
 
@@ -129,6 +141,9 @@ struct OpAddRegisterRegister : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], x + y);
     }
 };
 
@@ -137,6 +152,9 @@ struct OpSubtractRegisterRegister : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], x - y);
     }
 };
 
@@ -153,6 +171,9 @@ struct OpReverseSubtractRegisterRegister : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.set_register(_nibbles[1], y - x);
     }
 };
 
@@ -201,6 +222,9 @@ struct OpDraw : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        auto y = cpu.get_register(_nibbles[2]);
+        cpu.get_ui().draw(x, y);
     }
 };
 
@@ -225,6 +249,8 @@ struct OpGetDelay : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto delay = cpu.get_timer(DELAY);
+        cpu.set_register(_nibbles[1], delay);
     }
 };
 
@@ -241,6 +267,8 @@ struct OpSetDelay : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        cpu.set_timer(DELAY, x);
     }
 };
 
@@ -249,6 +277,8 @@ struct OpSetSound : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
+        auto x = cpu.get_register(_nibbles[1]);
+        cpu.set_timer(SOUND, x);
     }
 };
 
