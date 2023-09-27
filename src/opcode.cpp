@@ -5,7 +5,7 @@ using namespace chip_8;
 class Opcode : public IOpcode
 {
 public:
-    Opcode(NibbleSpan nibbles) : _nibbles(nibbles) {}
+    Opcode(std::span<unsigned, OPCODE_SIZE> nibbles) : _nibbles(nibbles) {}
 
 protected:
     std::span<unsigned, OPCODE_SIZE> _nibbles;
@@ -322,6 +322,6 @@ struct OpLoadRegisters : public Opcode
     }
 };
 
-std::unique_ptr<const IOpcode> opcode_factory(std::span<uint8_t, OPCODE_SIZE> nibbles)
+std::unique_ptr<const IOpcode> opcode_factory(std::span<unsigned, OPCODE_SIZE> nibbles)
 {
 }
