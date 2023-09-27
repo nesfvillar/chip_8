@@ -43,7 +43,7 @@ struct OpJump : public Opcode
     void execute(Cpu &cpu) const override
     {
         auto location = _nibbles[3] + _nibbles[2] * 0x10 + _nibbles[1] * 0x100;
-        cpu.set_register(PC, location);
+        cpu.set_program_counter(location);
     }
 };
 
@@ -224,7 +224,7 @@ struct OpDraw : public Opcode
     {
         auto x = cpu.get_register(_nibbles[1]);
         auto y = cpu.get_register(_nibbles[2]);
-        cpu.get_ui().draw(x, y);
+        cpu.get_ui().draw(x, y, _nibbles[3]);
     }
 };
 
@@ -249,7 +249,7 @@ struct OpGetDelay : public Opcode
 {
     void execute(Cpu &cpu) const override
     {
-        auto delay = cpu.get_timer(DELAY);
+        auto delay = cpu.get_timer(TimersEnum::DELAY);
         cpu.set_register(_nibbles[1], delay);
     }
 };
@@ -268,7 +268,7 @@ struct OpSetDelay : public Opcode
     void execute(Cpu &cpu) const override
     {
         auto x = cpu.get_register(_nibbles[1]);
-        cpu.set_timer(DELAY, x);
+        cpu.set_timer(TimersEnum::DELAY, x);
     }
 };
 
@@ -278,7 +278,7 @@ struct OpSetSound : public Opcode
     void execute(Cpu &cpu) const override
     {
         auto x = cpu.get_register(_nibbles[1]);
-        cpu.set_timer(SOUND, x);
+        cpu.set_timer(TimersEnum::SOUND, x);
     }
 };
 
