@@ -59,6 +59,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint16_t const _location;
     };
 
     // 3XNN
@@ -67,6 +70,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _value;
     };
 
     // 4XNN
@@ -75,6 +81,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _value;
     };
 
     // 5XY0
@@ -83,6 +92,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _x_register;
+        uint8_t const _y_register;
     };
 
     // 6XNN
@@ -91,6 +104,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
+        uint8_t const _value;
     };
 
     // 7XNN
@@ -99,6 +116,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
+        uint8_t const _value;
     };
 
     // 8XY0
@@ -106,7 +127,12 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            state.registers.at(_x_register) = _y_register;
         }
+
+    private:
+        uint8_t const _x_register;
+        uint8_t const _y_register;
     };
 
     // 8XY1
@@ -203,6 +229,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _x_register;
+        uint8_t const _y_register;
     };
 
     // 8XY7
@@ -227,6 +257,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _x_register;
+        uint8_t const _y_register;
     };
 
     // 9XY0
@@ -235,6 +269,10 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _x_register;
+        uint8_t const _y_register;
     };
 
     // ANNN
@@ -243,6 +281,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint16_t const _location;
     };
 
     // BNNN
@@ -251,6 +292,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint16_t const _location;
     };
 
     // CXNN
@@ -259,6 +303,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // DXYN
@@ -283,6 +330,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // EXA1
@@ -291,6 +341,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _x_register;
     };
 
     // FX07
@@ -300,11 +353,11 @@ namespace chip_8
         {
             auto delay = state.timers[Timer::DELAY];
 
-            state.registers.at(_x_register) = delay;
+            state.registers.at(_register) = delay;
         }
 
     private:
-        uint8_t const _x_register;
+        uint8_t const _register;
     };
 
     // FX0A
@@ -313,6 +366,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // FX15
@@ -349,6 +405,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // FX29
@@ -357,6 +416,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // FX33
@@ -365,6 +427,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // FX55
@@ -373,6 +438,9 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 
     // FX65
@@ -381,5 +449,8 @@ namespace chip_8
         void operator()(State& state, IUserInterface&) const noexcept override
         {
         }
+
+    private:
+        uint8_t const _register;
     };
 }
