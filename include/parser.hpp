@@ -1,6 +1,6 @@
 #pragma once
 
-#include "opcode.hpp"
+#include "operation.hpp"
 
 #include <array>
 #include <memory>
@@ -10,7 +10,7 @@
 
 namespace chip_8
 {
-    std::optional<std::unique_ptr<const IOpcode>> constexpr tokenize(std::ranges::viewable_range auto&& nibbles) noexcept
+    std::optional<std::unique_ptr<const IOperation>> constexpr tokenize(std::ranges::viewable_range auto&& nibbles) noexcept
     {
         std::array<uint8_t, 4> values;
         for (auto&& [i, nibble] : nibbles | std::views::enumerate)

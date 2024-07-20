@@ -1,7 +1,7 @@
 #pragma once
 
 #include "state.hpp"
-#include "opcode.hpp"
+#include "operation.hpp"
 #include "parser.hpp"
 #include "ui.hpp"
 
@@ -28,7 +28,7 @@ namespace chip_8
 
         ~Cpu() noexcept = default;
 
-        std::optional<std::unique_ptr<const IOpcode>> constexpr next_operation() const noexcept
+        std::optional<std::unique_ptr<const IOperation>> constexpr next_operation() const noexcept
         {
             auto operations = parse_slides(_state.memory | std::views::drop(_state.program_counter))
                 | std::views::filter([](auto&& o) { return o.has_value(); });
@@ -43,7 +43,7 @@ namespace chip_8
             }
         }
 
-        void execute_operation(IOpcode const* const operation) noexcept
+        void execute_operation(IOperation const* const operation) noexcept
         {
             operation->operator()(_state, _ui);
         }

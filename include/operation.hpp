@@ -6,16 +6,16 @@
 
 namespace chip_8
 {
-    struct IOpcode
+    struct IOperation
     {
         void virtual operator()(State& state, IUserInterface& ui) const noexcept = 0;
-        virtual ~IOpcode() noexcept = default;
+        virtual ~IOperation() noexcept = default;
     };
 
     // 0NNN
-    struct OpCallMCRoutine : public IOpcode
+    struct OpCallMCRoutine : public IOperation
     {
-        void operator()(State& state, IUserInterface&) const noexcept override
+        void operator()(State&, IUserInterface&) const noexcept override
         {
         }
 
@@ -24,7 +24,7 @@ namespace chip_8
     };
 
     // 00E0
-    struct OpClearScreen : public IOpcode
+    struct OpClearScreen : public IOperation
     {
         void operator()(State&, IUserInterface& ui) const noexcept override
         {
@@ -33,7 +33,7 @@ namespace chip_8
     };
 
     // 00EE
-    struct OpReturnSubroutine : public IOpcode
+    struct OpReturnSubroutine : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -41,7 +41,7 @@ namespace chip_8
     };
 
     // 1NNN
-    struct OpJump : public IOpcode
+    struct OpJump : public IOperation
     {
 
         void operator()(State& state, IUserInterface&) const noexcept override
@@ -54,7 +54,7 @@ namespace chip_8
     };
 
     // 2NNN
-    struct OpCallSubroutine : public IOpcode
+    struct OpCallSubroutine : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -65,7 +65,7 @@ namespace chip_8
     };
 
     // 3XNN
-    struct OpSkipIfEqValue : public IOpcode
+    struct OpSkipIfEqValue : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -76,7 +76,7 @@ namespace chip_8
     };
 
     // 4XNN
-    struct OpSkipIfNotEqValue : public IOpcode
+    struct OpSkipIfNotEqValue : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -87,7 +87,7 @@ namespace chip_8
     };
 
     // 5XY0
-    struct OpSkipIfEqRegister : public IOpcode
+    struct OpSkipIfEqRegister : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -99,7 +99,7 @@ namespace chip_8
     };
 
     // 6XNN
-    struct OpSetRegisterToValue : public IOpcode
+    struct OpSetRegisterToValue : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -111,7 +111,7 @@ namespace chip_8
     };
 
     // 7XNN
-    struct OpAddRegisterValue : public IOpcode
+    struct OpAddRegisterValue : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -123,7 +123,7 @@ namespace chip_8
     };
 
     // 8XY0
-    struct OpSetRegisterToRegister : public IOpcode
+    struct OpSetRegisterToRegister : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -136,7 +136,7 @@ namespace chip_8
     };
 
     // 8XY1
-    struct OpOr : public IOpcode
+    struct OpOr : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -152,7 +152,7 @@ namespace chip_8
     };
 
     // 8XY2
-    struct OpAnd : public IOpcode
+    struct OpAnd : public IOperation
     {
         constexpr OpAnd(uint8_t x_register, uint8_t y_register) noexcept :
             _x_register(x_register),
@@ -172,7 +172,7 @@ namespace chip_8
     };
 
     // 8XY3
-    struct OpXor : public IOpcode
+    struct OpXor : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -188,7 +188,7 @@ namespace chip_8
     };
 
     // 8XY4
-    struct OpAddRegisterRegister : public IOpcode
+    struct OpAddRegisterRegister : public IOperation
     {
         constexpr OpAddRegisterRegister(uint8_t x_register, uint8_t y_register) noexcept :
             _x_register(x_register),
@@ -208,7 +208,7 @@ namespace chip_8
     };
 
     // 8XY5
-    struct OpSubtractRegisterRegister : public IOpcode
+    struct OpSubtractRegisterRegister : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -224,7 +224,7 @@ namespace chip_8
     };
 
     // 8XY6
-    struct OpShiftRight : public IOpcode
+    struct OpShiftRight : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -236,7 +236,7 @@ namespace chip_8
     };
 
     // 8XY7
-    struct OpReverseSubtractRegisterRegister : public IOpcode
+    struct OpReverseSubtractRegisterRegister : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -252,7 +252,7 @@ namespace chip_8
     };
 
     // 8XYE
-    struct OpShiftLeft : public IOpcode
+    struct OpShiftLeft : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -264,7 +264,7 @@ namespace chip_8
     };
 
     // 9XY0
-    struct OpSkipIfNotEqRegister : public IOpcode
+    struct OpSkipIfNotEqRegister : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -276,7 +276,7 @@ namespace chip_8
     };
 
     // ANNN
-    struct OpSet : public IOpcode
+    struct OpSet : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -287,7 +287,7 @@ namespace chip_8
     };
 
     // BNNN
-    struct OpJumpPlus : public IOpcode
+    struct OpJumpPlus : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -298,7 +298,7 @@ namespace chip_8
     };
 
     // CXNN
-    struct OpRandom : public IOpcode
+    struct OpRandom : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -309,7 +309,7 @@ namespace chip_8
     };
 
     // DXYN
-    struct OpDraw : public IOpcode
+    struct OpDraw : public IOperation
     {
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
@@ -325,7 +325,7 @@ namespace chip_8
     };
 
     // EX9E
-    struct OpSkipIfKeyPressed : public IOpcode
+    struct OpSkipIfKeyPressed : public IOperation
     {
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
@@ -336,7 +336,7 @@ namespace chip_8
     };
 
     // EXA1
-    struct OpSkipIfKeyNotPressed : public IOpcode
+    struct OpSkipIfKeyNotPressed : public IOperation
     {
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
@@ -347,7 +347,7 @@ namespace chip_8
     };
 
     // FX07
-    struct OpGetDelay : public IOpcode
+    struct OpGetDelay : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -361,7 +361,7 @@ namespace chip_8
     };
 
     // FX0A
-    struct OpGetKeyBlocking : public IOpcode
+    struct OpGetKeyBlocking : public IOperation
     {
         void operator()(State& state, IUserInterface& ui) const noexcept override
         {
@@ -372,7 +372,7 @@ namespace chip_8
     };
 
     // FX15
-    struct OpSetDelay : public IOpcode
+    struct OpSetDelay : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -386,7 +386,7 @@ namespace chip_8
     };
 
     // FX18
-    struct OpSetSound : public IOpcode
+    struct OpSetSound : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -400,7 +400,7 @@ namespace chip_8
     };
 
     // FX1E
-    struct OpAddToAdress : public IOpcode
+    struct OpAddToAdress : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -411,7 +411,7 @@ namespace chip_8
     };
 
     // FX29
-    struct OpSetAdressToSprite : public IOpcode
+    struct OpSetAdressToSprite : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -422,7 +422,7 @@ namespace chip_8
     };
 
     // FX33
-    struct OpStoreBCDAtAdress : public IOpcode
+    struct OpStoreBCDAtAdress : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -433,7 +433,7 @@ namespace chip_8
     };
 
     // FX55
-    struct OpDumpRegisters : public IOpcode
+    struct OpDumpRegisters : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
@@ -444,7 +444,7 @@ namespace chip_8
     };
 
     // FX65
-    struct OpLoadRegisters : public IOpcode
+    struct OpLoadRegisters : public IOperation
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
