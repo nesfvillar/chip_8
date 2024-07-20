@@ -24,7 +24,7 @@ namespace chip_8
 
     std::array<uint8_t, 2> constexpr separate_byte(uint8_t byte) noexcept
     {
-        return { (byte & 0xF0) >> 4, byte & 0x0F };
+        return { byte >> 4, byte & 0x0F };
     }
 
     auto constexpr get_nibbles(std::ranges::viewable_range auto&& bytes) noexcept
