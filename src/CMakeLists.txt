@@ -1,1 +1,1 @@
-add_executable(emulator emulator.cpp ui.cpp cpu.cpp opcode.cpp)
+add_executable(emulator emulator.cpp)
