@@ -30,7 +30,8 @@ namespace chip_8
 
         std::optional<std::unique_ptr<const IOpcode>> constexpr next_operation() const noexcept
         {
-            auto operations = parse_slides(_state.memory | std::views::drop(_state.program_counter));
+            auto operations = parse_slides(_state.memory | std::views::drop(_state.program_counter))
+                | std::views::filter([](auto&& o) { return o.has_value(); });
 
             if (operations.begin() != operations.end())
             {
