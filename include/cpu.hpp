@@ -1,9 +1,9 @@
 #pragma once
 
 #include "state.hpp"
+#include "opcode.hpp"
 #include "ui.hpp"
 
-#include <span>
 
 namespace chip_8
 {
@@ -23,9 +23,10 @@ namespace chip_8
 
         ~Cpu() noexcept = default;
 
-        void set_program_counter(size_t location);
-
-        void set_timer(TimersEnum timer, unsigned value);
+        void operator()(IOpcode const* const operation) noexcept
+        {
+            operation->operator()(_state, _ui);
+        }
 
     private:
         State _state;
