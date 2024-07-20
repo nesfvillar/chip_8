@@ -3,6 +3,8 @@
 #include "state.hpp"
 #include "ui.hpp"
 
+#include <random>
+
 
 namespace chip_8
 {
@@ -37,6 +39,8 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            auto location = state.memory[--state.stack_pointer];
+            state.program_counter = location;
         }
     };
 
@@ -58,6 +62,8 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            state.memory[state.stack_pointer++] = state.program_counter;
+            state.program_counter = _location;
         }
 
     private:
@@ -69,9 +75,14 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            if (state.registers.at(_register) == _value)
+            {
+                state.program_counter += 2;
+            }
         }
 
     private:
+        uint8_t const _register;
         uint8_t const _value;
     };
 
@@ -80,9 +91,14 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            if (state.registers.at(_register) != _value)
+            {
+                state.program_counter += 2;
+            }
         }
 
     private:
+        uint8_t const _register;
         uint8_t const _value;
     };
 
@@ -91,6 +107,13 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            auto x_value = state.registers.at(_x_register);
+            auto y_value = state.registers.at(_y_register);
+
+            if (x_value == y_value)
+            {
+                state.program_counter += 2;
+            }
         }
 
     private:
@@ -103,6 +126,7 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            state.registers.at(_register) = _value;
         }
 
     private:
@@ -115,6 +139,7 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            state.registers.at(_register) += _value;
         }
 
     private:
@@ -127,7 +152,7 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
-            state.registers.at(_x_register) = _y_register;
+            state.registers.at(_x_register) = state.registers.at(_y_register);
         }
 
     private:
@@ -228,6 +253,11 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            auto x_value = state.registers.at(_x_register);
+            auto y_value = state.registers.at(_y_register);
+
+            state.registers.at(_x_register) = x_value >> y_value;
+
         }
 
     private:
@@ -256,6 +286,11 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            auto x_value = state.registers.at(_x_register);
+            auto y_value = state.registers.at(_y_register);
+
+            state.registers.at(_x_register) = x_value << y_value;
+
         }
 
     private:
@@ -268,6 +303,13 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            auto x_value = state.registers.at(_x_register);
+            auto y_value = state.registers.at(_y_register);
+
+            if (x_value != y_value)
+            {
+                state.program_counter += 2;
+            }
         }
 
     private:
