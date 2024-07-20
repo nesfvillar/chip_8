@@ -28,7 +28,7 @@ namespace chip_8
     }
 
     auto constexpr get_nibbles(std::ranges::viewable_range auto&& bytes)
-            {
+    {
         return bytes
             | std::views::transform(separate_byte)
             | std::views::join;
