@@ -39,10 +39,10 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
-            auto location = state.stack.top();
+            auto location = state.stack.back();
 
             state.program_counter = location;
-            state.stack.pop();
+            state.stack.pop_back();
         }
     };
 
@@ -64,7 +64,7 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
-            state.stack.push(state.program_counter);
+            state.stack.push_back(state.program_counter);
             state.program_counter = _location;
         }
 
