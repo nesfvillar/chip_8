@@ -34,10 +34,19 @@ namespace chip_8
             | std::views::join;
     }
 
-    auto constexpr parse(std::ranges::viewable_range auto&& program) noexcept
+    auto constexpr parse_chunks(std::ranges::viewable_range auto&& program) noexcept
     {
         return get_nibbles(program)
             | std::views::chunk(4)
+            | std::views::transform([](auto&& o) {return tokenize(o);})
+            | std::views::filter([](auto&& o) { return o.has_value(); })
+            | std::views::transform([](auto&& o) { return std::move(o.value()); });
+    }
+
+    auto constexpr parse_slides(std::ranges::viewable_range auto&& program) noexcept
+    {
+        return get_nibbles(program)
+            | std::views::slide(4)
             | std::views::transform([](auto&& o) {return tokenize(o);})
             | std::views::filter([](auto&& o) { return o.has_value(); })
             | std::views::transform([](auto&& o) { return std::move(o.value()); });
