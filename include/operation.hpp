@@ -39,8 +39,10 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
-            auto location = state.memory[--state.stack_pointer];
-            state.program_counter = location;
+            auto location_low = state.memory.at(--state.stack_pointer);
+            auto location_high = state.memory.at(--state.stack_pointer);
+
+            state.program_counter = (location_high << 4) | location_low;
         }
     };
 
@@ -62,7 +64,12 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
-            state.memory[state.stack_pointer++] = state.program_counter;
+            auto location_high = state.program_counter >> 4;;
+            auto location_low = state.program_counter & 0x0F;
+
+            state.memory.at(state.stack_pointer++) = location_high;
+            state.memory.at(state.stack_pointer++) = location_low;
+
             state.program_counter = _location;
         }
 
