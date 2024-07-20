@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <stack>
 
 
 namespace chip_8
@@ -21,7 +22,7 @@ namespace chip_8
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTERS_SIZE> registers{};
         std::array<uint16_t, TIMERS_SIZE> timers{};
+        std::stack<uint16_t> stack{};
         uint16_t program_counter{};
-        uint16_t stack_pointer{};
     };
 }
