@@ -21,7 +21,7 @@ namespace chip_8
     {
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTERS_SIZE> registers{};
-        std::array<uint16_t, TIMERS_SIZE> timers{};
+        std::array<uint8_t, TIMERS_SIZE> timers{};
         std::vector<uint16_t> stack{};
         uint16_t program_counter{};
     };
