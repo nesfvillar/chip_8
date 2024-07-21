@@ -1,1 +1,6 @@
 add_executable(emulator emulator.cpp)
+if(MSVC)
+  target_compile_options(emulator PRIVATE /W4 /WX)
+else()
+  target_compile_options(emulator PRIVATE -Wall -Wextra -Wpedantic)
+endif()
