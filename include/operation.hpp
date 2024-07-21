@@ -346,10 +346,13 @@ namespace chip_8
     {
         void operator()(State& state, IUserInterface&) const noexcept override
         {
+            state.registers.at(_register) = _random_value & _mask;
         }
 
     private:
         uint8_t const _register;
+        uint8_t const _mask;
+        uint8_t const _random_value;
     };
 
     // DXYN
