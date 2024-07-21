@@ -227,6 +227,7 @@ namespace chip_8
             auto y_value = state.registers.at(_y_register);
 
             state.registers.at(_x_register) = x_value + y_value;
+            state.registers[0x0F] = 0xFFFF - x_value <= y_value;
         }
 
     private:
@@ -243,6 +244,7 @@ namespace chip_8
             auto y_value = state.registers.at(_y_register);
 
             state.registers.at(_x_register) = x_value - y_value;
+            state.registers[0x0F] = x_value > y_value;
         }
 
     private:
@@ -258,8 +260,8 @@ namespace chip_8
             auto x_value = state.registers.at(_x_register);
             auto y_value = state.registers.at(_y_register);
 
-            state.registers.at(_x_register) = x_value >> y_value;
-
+            state.registers.at(_x_register) = x_value >> 1;
+            state.registers[0x0F] = x_value & 1;
         }
 
     private:
@@ -276,6 +278,7 @@ namespace chip_8
             auto y_value = state.registers.at(_y_register);
 
             state.registers.at(_x_register) = y_value - x_value;
+            state.registers[0x0F] = y_value > x_value;
         }
 
     private:
@@ -291,8 +294,8 @@ namespace chip_8
             auto x_value = state.registers.at(_x_register);
             auto y_value = state.registers.at(_y_register);
 
-            state.registers.at(_x_register) = x_value << y_value;
-
+            state.registers.at(_x_register) = x_value << 1;
+            state.registers[0x0F] = (x_value & (1 << 7)) > 0;
         }
 
     private:
