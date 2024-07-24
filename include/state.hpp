@@ -1,5 +1,7 @@
 #pragma once
 
+#include <opcode.hpp>
+
 #include <array>
 #include <cstdint>
 #include <vector>
@@ -24,5 +26,13 @@ namespace chip_8
         std::array<uint8_t, TIMERS_SIZE> timers{};
         std::vector<uint16_t> stack{};
         uint16_t program_counter{};
+
+        Opcode constexpr fetch_instruction() const noexcept
+        {
+            auto high_byte = memory.at(program_counter);
+            auto low_byte = memory.at(program_counter + 1);
+
+            return Opcode{high_byte, low_byte};
+        }
     };
 }
