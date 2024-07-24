@@ -1,51 +1,47 @@
 #pragma once
 
 #include "operation.hpp"
+#include "opcode.hpp"
 
-#include <array>
-#include <memory>
 #include <optional>
 #include <ranges>
 
 
 namespace chip_8
 {
-    std::optional<std::unique_ptr<const IOperation>> constexpr tokenize(std::ranges::viewable_range auto&& nibbles) noexcept
+    std::optional<Operation> constexpr tokenize(Opcode const& opcode) noexcept
     {
-        std::array<uint8_t, 4> values;
-        for (auto&& [i, nibble] : nibbles | std::views::enumerate)
+        switch (opcode.a())
         {
-            values[i] = nibble;
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xA:
+        case 0xB:
+        case 0xC:
+        case 0xD:
+        case 0xE:
+        case 0xF:
+        default:
+            return std::nullopt;
         }
-
-
-        return std::nullopt;
     }
 
-    std::array<uint8_t, 2> constexpr separate_byte(uint8_t byte) noexcept
+    auto constexpr parse(std::ranges::viewable_range auto const& program) noexcept
     {
-
-        return { static_cast<uint8_t>(byte >> 4), static_cast<uint8_t>(byte & 0x0F) };
-    }
-
-    auto constexpr get_nibbles(std::ranges::viewable_range auto&& bytes) noexcept
-    {
-        return bytes
-            | std::views::transform(separate_byte)
-            | std::views::join;
-    }
-
-    auto constexpr parse_chunks(std::ranges::viewable_range auto&& program) noexcept
-    {
-        return get_nibbles(program)
-            | std::views::chunk(4)
-            | std::views::transform([](auto&& o) {return tokenize(o);});
-    }
-
-    auto constexpr parse_slides(std::ranges::viewable_range auto&& program) noexcept
-    {
-        return get_nibbles(program)
-            | std::views::slide(4)
-            | std::views::transform([](auto&& o) {return tokenize(o);});
+        return program
+            | std::views::chunk(2)
+            | std::views::transform([](auto&& o)
+                {
+                    return Opcode{ std::get<0>(o), std::get<1>(o) };
+                })
+            | std::views::transform(tokenize);
     }
 }
