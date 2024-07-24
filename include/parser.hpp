@@ -9,7 +9,7 @@
 
 namespace chip_8
 {
-    std::optional<Operation> constexpr tokenize(Opcode const& opcode) noexcept
+    std::optional<Operation> constexpr decode(Opcode const& opcode) noexcept
     {
         switch (opcode.a())
         {
@@ -42,6 +42,6 @@ namespace chip_8
                 {
                     return Opcode{ std::get<0>(o), std::get<1>(o) };
                 })
-            | std::views::transform(tokenize);
+            | std::views::transform(decode);
     }
 }
