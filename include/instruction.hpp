@@ -590,7 +590,7 @@ namespace chip_8
         };
     }
 
-    using Operation = std::variant <
+    using Instruction = std::variant <
         instruction::CallMCRoutine,
         instruction::ClearScreen,
         instruction::ReturnSubroutine,

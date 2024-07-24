@@ -1,6 +1,6 @@
 #pragma once
 
-#include "operation.hpp"
+#include "instruction.hpp"
 #include "opcode.hpp"
 
 #include <optional>
@@ -9,7 +9,7 @@
 
 namespace chip_8
 {
-    std::optional<Operation> constexpr decode(Opcode const& opcode) noexcept
+    std::optional<Instruction> constexpr decode(Opcode const& opcode) noexcept
     {
         switch (opcode.a())
         {

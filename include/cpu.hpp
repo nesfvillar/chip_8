@@ -1,6 +1,6 @@
 #pragma once
 
-#include "operation.hpp"
+#include "instruction.hpp"
 #include "parser.hpp"
 #include "state.hpp"
 #include "ui.hpp"
@@ -28,12 +28,12 @@ namespace chip_8
 
         ~Cpu() noexcept = default;
 
-        std::optional<Operation> constexpr next_operation() const noexcept
+        std::optional<Instruction> constexpr next_operation() const noexcept
         {
             return decode(_state.fetch_instruction(_state.program_counter));
         }
 
-        void execute_operation(Operation const& operation) noexcept
+        void execute_operation(Instruction const& operation) noexcept
         {
             _state.program_counter += 2;
             std::visit([this](auto const& op) noexcept
