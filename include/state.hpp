@@ -27,10 +27,10 @@ namespace chip_8
         std::vector<uint16_t> stack{};
         uint16_t program_counter{};
 
-        Opcode constexpr fetch_instruction() const noexcept
+        Opcode constexpr fetch_instruction(uint16_t location) const noexcept
         {
-            auto high_byte = memory.at(program_counter);
-            auto low_byte = memory.at(program_counter + 1);
+            auto high_byte = memory.at(location);
+            auto low_byte = memory.at(location + 1);
 
             return Opcode{high_byte, low_byte};
         }

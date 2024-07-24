@@ -30,7 +30,7 @@ namespace chip_8
 
         std::optional<Operation> constexpr next_operation() const noexcept
         {
-            return decode(_state.fetch_instruction());
+            return decode(_state.fetch_instruction(_state.program_counter));
         }
 
         void execute_operation(Operation const& operation) noexcept
