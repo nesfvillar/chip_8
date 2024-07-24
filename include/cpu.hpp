@@ -28,24 +28,18 @@ namespace chip_8
 
         ~Cpu() noexcept = default;
 
-        std::optional<std::unique_ptr<const IOperation>> constexpr next_operation() const noexcept
+        std::optional<Operation> constexpr next_operation() const noexcept
         {
-            auto operations = parse_slides(_state.memory | std::views::drop(_state.program_counter))
-                | std::views::filter([](auto&& o) { return o.has_value(); });
-
-            if (operations.begin() != operations.end())
-            {
-                return *operations.begin();
-            }
-            else
-            {
-                return std::nullopt;
-            }
+            return tokenize(_state.fetch_instruction());
         }
 
-        void execute_operation(IOperation const* const operation) noexcept
+        void execute_operation(Operation const& operation) noexcept
         {
-            operation->operator()(_state, _ui);
+            _state.program_counter += 2;
+            std::visit([this](auto const& op) noexcept
+        {
+                    op(_state, _ui);
+                }, operation);
         }
 
     private:
