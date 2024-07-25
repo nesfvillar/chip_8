@@ -11,7 +11,7 @@ namespace chip_8
 {
     namespace instruction
     {
-        // 0NNN{
+        // 0NNN
         struct CallMCRoutine
         {
             constexpr CallMCRoutine(size_t location) noexcept : _location(location) {}
@@ -39,9 +39,9 @@ namespace chip_8
             void operator()(State& state, IUserInterface&) const noexcept
             {
                 auto location = state.stack.back();
+                state.stack.pop_back();
 
                 state.program_counter = location;
-                state.stack.pop_back();
             }
         };
 

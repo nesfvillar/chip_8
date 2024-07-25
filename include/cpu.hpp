@@ -11,7 +11,6 @@
 #include <variant>
 
 
-
 namespace chip_8
 {
     class Cpu
