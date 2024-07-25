@@ -26,6 +26,6 @@ namespace chip_8
         uint8_t constexpr nn() const noexcept { return _value & 0x00FF; }
 
     private:
-        uint16_t const _value;
+        uint16_t _value;
     };
 }
