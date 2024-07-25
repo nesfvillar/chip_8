@@ -13,7 +13,7 @@ namespace chip_8
         constexpr Opcode(uint8_t high_byte, uint8_t low_byte) noexcept :
             _value((high_byte << 8) | low_byte) {}
 
-        uint8_t constexpr a() const noexcept { return (_value & 0xF000) >> 12; }
+        uint8_t constexpr a() const noexcept { return _value >> 12; }
 
         uint8_t constexpr x() const noexcept { return (_value & 0x0F00) >> 8; }
 
