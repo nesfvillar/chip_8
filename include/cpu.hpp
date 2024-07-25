@@ -5,7 +5,6 @@
 #include "state.hpp"
 #include "ui.hpp"
 
-#include <algorithm>
 #include <ranges>
 #include <optional>
 #include <variant>
@@ -22,12 +21,8 @@ namespace chip_8
         };
 
         constexpr Cpu(std::ranges::range auto const& program, IUserInterface& ui) noexcept :
-                        _ui(ui)
-        {
-        std::ranges::copy(
-                program,
-                _state.memory.begin() + _state.PROGRAM_START);
-        }
+            _state(program),
+            _ui(ui) {}
 
         ~Cpu() noexcept = default;
 

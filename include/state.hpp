@@ -2,8 +2,10 @@
 
 #include <opcode.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
+#include <ranges>
 #include <vector>
 
 
@@ -17,23 +19,36 @@ namespace chip_8
 
     struct State
     {
-        uint16_t static constexpr PROGRAM_START = 0x200;
-        size_t static constexpr MEMORY_SIZE = 0x1000;
-        size_t static constexpr REGISTERS_SIZE = 0x10;
-        size_t static constexpr TIMERS_SIZE = 0x2;
+    public:
+        constexpr State() noexcept = default;
 
-        std::array<uint8_t, MEMORY_SIZE> memory{};
-        std::array<uint8_t, REGISTERS_SIZE> registers{};
-        std::array<uint8_t, TIMERS_SIZE> timers{};
-        std::vector<uint16_t> stack{};
-        uint16_t program_counter = PROGRAM_START;
+        constexpr State(std::ranges::range auto const& program) noexcept
+        {
+            std::ranges::copy(
+                program,
+                memory.begin() + _PROGRAM_START);
+        }
 
         Opcode constexpr fetch_instruction(uint16_t location) const noexcept
         {
             auto high_byte = memory.at(location);
             auto low_byte = memory.at(location + 1);
 
-            return Opcode{high_byte, low_byte};
+            return Opcode{ high_byte, low_byte };
         }
+
+    private:
+        uint16_t static constexpr _PROGRAM_START = 0x200;
+        size_t static constexpr _MEMORY_SIZE = 0x1000;
+        size_t static constexpr _REGISTERS_SIZE = 0x10;
+        size_t static constexpr _TIMERS_SIZE = 0x2;
+
+    public:
+        std::array<uint8_t, _MEMORY_SIZE> memory{};
+        std::array<uint8_t, _REGISTERS_SIZE> registers{};
+        std::vector<uint16_t> stack{};
+        std::array<uint8_t, _TIMERS_SIZE> timers{};
+        uint16_t index = 0;
+        uint16_t program_counter = _PROGRAM_START;
     };
 }
