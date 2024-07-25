@@ -9,10 +9,6 @@
 
 namespace chip_8
 {
-    size_t constexpr MEMORY_SIZE = 0x1000;
-    size_t constexpr REGISTERS_SIZE = 0x10;
-    size_t constexpr TIMERS_SIZE = 0x2;
-
     enum Timer
     {
         DELAY,
@@ -22,6 +18,9 @@ namespace chip_8
     struct State
     {
         uint16_t static constexpr PROGRAM_START = 0x200;
+        size_t static constexpr MEMORY_SIZE = 0x1000;
+        size_t static constexpr REGISTERS_SIZE = 0x10;
+        size_t static constexpr TIMERS_SIZE = 0x2;
 
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTERS_SIZE> registers{};
