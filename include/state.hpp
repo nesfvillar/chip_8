@@ -21,11 +21,13 @@ namespace chip_8
 
     struct State
     {
+        uint16_t static constexpr PROGRAM_START = 0x200;
+
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTERS_SIZE> registers{};
         std::array<uint8_t, TIMERS_SIZE> timers{};
         std::vector<uint16_t> stack{};
-        uint16_t program_counter{};
+        uint16_t program_counter = PROGRAM_START;
 
         Opcode constexpr fetch_instruction(uint16_t location) const noexcept
         {
