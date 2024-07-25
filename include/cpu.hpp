@@ -34,8 +34,8 @@ namespace chip_8
         void execute_operation(Instruction const& operation) noexcept
         {
             _state.program_counter += 2;
-            std::visit([this](auto const& op) noexcept
-        {
+            std::visit([this](auto const& op)
+                {
                     op(_state, _ui);
                 }, operation);
         }
