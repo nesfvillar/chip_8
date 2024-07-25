@@ -4,6 +4,8 @@
 #include "ui.hpp"
 
 #include <random>
+#include <ranges>
+#include <span>
 #include <variant>
 
 
@@ -426,9 +428,11 @@ namespace chip_8
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
 
-                std::vector<Sprite> sprites(state.memory.begin() + state.index, state.memory.begin() + state.index + _size);
+                auto indices = state.memory
+                    | std::views::drop(state.index)
+                    | std::views::take(_size);
 
-                ui.draw(sprites, x_value, y_value);
+                ui.draw(std::span<Sprite>{ indices }, x_value, y_value);
             }
 
         private:
