@@ -15,12 +15,12 @@ namespace chip_8
     class Cpu
     {
     public:
-        constexpr Cpu(IUserInterface& ui) noexcept :
+        constexpr Cpu(UserInterface& ui) noexcept :
             _ui(ui)
         {
         };
 
-        constexpr Cpu(std::ranges::range auto const& program, IUserInterface& ui) noexcept :
+        constexpr Cpu(std::ranges::range auto const& program, UserInterface& ui) noexcept :
             _state(program),
             _ui(ui) {}
 
@@ -42,6 +42,6 @@ namespace chip_8
 
     private:
         State _state;
-        IUserInterface& _ui;
+        UserInterface& _ui;
     };
 }

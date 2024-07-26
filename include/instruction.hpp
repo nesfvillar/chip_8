@@ -18,7 +18,7 @@ namespace chip_8
         {
             constexpr CallMCRoutine(size_t location) noexcept : _location(location) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -29,7 +29,7 @@ namespace chip_8
         // 00E0
         struct ClearScreen
         {
-            void operator()(State&, IUserInterface& ui) const noexcept
+            void operator()(State&, UserInterface& ui) const noexcept
             {
                 ui.clear_screen();
             }
@@ -38,7 +38,7 @@ namespace chip_8
         // 00EE
         struct ReturnSubroutine
         {
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto location = state.stack.back();
                 state.stack.pop_back();
@@ -52,7 +52,7 @@ namespace chip_8
         {
             constexpr Jump(size_t location) noexcept : _location(location) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.program_counter = _location;
             }
@@ -66,7 +66,7 @@ namespace chip_8
         {
             constexpr CallSubroutine(size_t location) noexcept : _location(location) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.stack.push_back(state.program_counter);
                 state.program_counter = _location;
@@ -83,7 +83,7 @@ namespace chip_8
                 _register(reg),
                 _value(value) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 if (state.registers.at(_register) == _value)
                 {
@@ -103,7 +103,7 @@ namespace chip_8
                 _register(reg),
                 _value(value) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 if (state.registers.at(_register) != _value)
                 {
@@ -123,7 +123,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -146,7 +146,7 @@ namespace chip_8
                 _register(reg),
                 _value(value) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.registers.at(_register) = _value;
             }
@@ -163,7 +163,7 @@ namespace chip_8
                 _register(reg),
                 _value(value) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.registers.at(_register) += _value;
             }
@@ -180,7 +180,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.registers.at(_x_register) = state.registers.at(_y_register);
             }
@@ -197,7 +197,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -217,7 +217,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -237,7 +237,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -257,7 +257,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -278,7 +278,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -297,7 +297,7 @@ namespace chip_8
         {
             constexpr ShiftRight(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_register);
 
@@ -316,7 +316,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -335,7 +335,7 @@ namespace chip_8
         {
             constexpr ShiftLeft(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto value = state.registers.at(_register);
 
@@ -354,7 +354,7 @@ namespace chip_8
                 _x_register(x_register),
                 _y_register(y_register) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -375,7 +375,7 @@ namespace chip_8
         {
             constexpr Set(uint16_t location) noexcept : _location(location) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -388,7 +388,7 @@ namespace chip_8
         {
             constexpr JumpPlus(uint16_t location) noexcept : _location(location) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -404,7 +404,7 @@ namespace chip_8
                 _mask(mask),
                 _random_value(random_value) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 state.registers.at(_register) = _random_value & _mask;
             }
@@ -423,7 +423,7 @@ namespace chip_8
                 _y_register(y_register),
                 _size(size) {}
 
-            void operator()(State& state, IUserInterface& ui) const noexcept
+            void operator()(State& state, UserInterface& ui) const noexcept
             {
                 auto x_value = state.registers.at(_x_register);
                 auto y_value = state.registers.at(_y_register);
@@ -432,7 +432,7 @@ namespace chip_8
                     | std::views::drop(state.index)
                     | std::views::take(_size);
 
-                ui.draw(std::span<Sprite>{ indices }, x_value, y_value);
+                state.registers[0xF] = ui.draw(std::span<Sprite>{ indices }, x_value, y_value);
             }
 
         private:
@@ -446,7 +446,7 @@ namespace chip_8
         {
             constexpr SkipIfKeyPressed(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -459,7 +459,7 @@ namespace chip_8
         {
             constexpr SkipIfKeyNotPressed(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -472,7 +472,7 @@ namespace chip_8
         {
             constexpr GetDelay(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto delay = state.timers[Timer::DELAY];
 
@@ -488,7 +488,7 @@ namespace chip_8
         {
             constexpr GetKeyBlocking(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -501,7 +501,7 @@ namespace chip_8
         {
             constexpr SetDelay(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto value = state.registers.at(_register);
 
@@ -517,7 +517,7 @@ namespace chip_8
         {
             constexpr SetSound(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State& state, IUserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
                 auto value = state.registers.at(_register);
 
@@ -533,7 +533,7 @@ namespace chip_8
         {
             constexpr AddToAdress(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -546,7 +546,7 @@ namespace chip_8
         {
             constexpr SetAdressToSprite(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -559,7 +559,7 @@ namespace chip_8
         {
             constexpr StoreBCDAtAdress(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -572,7 +572,7 @@ namespace chip_8
         {
             constexpr DumpRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
@@ -585,7 +585,7 @@ namespace chip_8
         {
             constexpr LoadRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-            void operator()(State&, IUserInterface&) const noexcept
+            void operator()(State&, UserInterface&) const noexcept
             {
             }
 
