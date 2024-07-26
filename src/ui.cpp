@@ -31,13 +31,4 @@ bool UserInterface::draw(std::span<const Sprite> sprites, size_t x, size_t y) no
     return collision;
 }
 
-bool UserInterface::_draw_pixel(bool pixel, size_t x, size_t y) noexcept
-{
-    if (x >= WIDTH_ || y >= HEIGHT_)
-        return false;
 
-    bool collision = _screen_buffer[y][x] == pixel;
-
-    _screen_buffer[y][x] ^= pixel;
-    return collision;
-}

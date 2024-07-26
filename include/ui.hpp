@@ -19,8 +19,16 @@ namespace chip_8
         bool virtual draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept;
 
     private:
-        bool _draw_pixel(bool pixel, size_t x, size_t y) noexcept;
+        bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept
+        {
+            if (x >= WIDTH_ || y >= HEIGHT_)
+                return false;
 
+            bool collision = _screen_buffer[y][x] == pixel;
+
+            _screen_buffer[y][x] ^= pixel;
+            return collision;
+        }
 
     public:
         size_t static constexpr WIDTH_ = 64;
