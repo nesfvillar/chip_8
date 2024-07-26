@@ -21,7 +21,7 @@ namespace chip_8
     private:
         bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept
         {
-            if (x >= WIDTH_ || y >= HEIGHT_)
+            if (x >= WIDTH || y >= HEIGHT)
                 return false;
 
             bool collision = _screen_buffer[y][x] == pixel;
@@ -31,10 +31,10 @@ namespace chip_8
         }
 
     public:
-        size_t static constexpr WIDTH_ = 64;
-        size_t static constexpr HEIGHT_ = 32;
+        size_t static constexpr WIDTH = 64;
+        size_t static constexpr HEIGHT = 32;
 
     private:
-        std::array<std::array<bool, WIDTH_>, HEIGHT_> _screen_buffer;
+        std::array<std::array<bool, WIDTH>, HEIGHT> _screen_buffer;
     };
 }
