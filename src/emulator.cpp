@@ -4,7 +4,7 @@
 
 #include <filesystem>
 #include <fstream>
-#include <ranges>
+#include <vector>
 
 
 using namespace chip_8;
