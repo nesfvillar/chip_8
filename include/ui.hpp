@@ -37,4 +37,12 @@ namespace chip_8
     protected:
         std::array<std::array<bool, WIDTH>, HEIGHT> screen_buffer_;
     };
+
+    class TerminalUserInterface : public UserInterface
+    {
+    public:
+        TerminalUserInterface() noexcept = default;
+
+        bool draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept override;
+    };
 }

@@ -1,7 +1,7 @@
 #include "ui.hpp"
 
+#include <iostream>
 #include <ranges>
-
 
 using namespace chip_8;
 
@@ -34,4 +34,19 @@ bool UserInterface::draw(std::span<const Sprite> sprites, size_t x, size_t y) no
     return collision;
 }
 
+bool TerminalUserInterface::draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept
+{
+    bool collision = UserInterface::draw(sprites, x, y);
 
+    for (auto row : screen_buffer_)
+    {
+        for (auto pixel : row)
+        {
+            if (pixel) std::cout << '#';
+            else std::cout << '.';
+        }
+        std::cout << '\n';
+    }
+
+    return collision;
+}
