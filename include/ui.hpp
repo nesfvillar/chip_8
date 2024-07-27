@@ -24,9 +24,9 @@ namespace chip_8
             if (x >= WIDTH || y >= HEIGHT)
                 return false;
 
-            bool collision = screen_buffer_[y][x] == pixel;
+            bool collision = screen_buffer_[y][x] && (screen_buffer_[y][x] == pixel);
 
-            screen_buffer_[y][x] ^= pixel;
+            screen_buffer_[y][x] = pixel && !collision;
             return collision;
         }
 
