@@ -14,7 +14,7 @@ namespace chip_8
     public:
         virtual ~UserInterface() noexcept = default;
 
-        void virtual clear_screen() noexcept;
+        void clear_screen() noexcept;
 
         bool virtual draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept;
 
