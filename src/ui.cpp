@@ -7,7 +7,7 @@ using namespace chip_8;
 
 void UserInterface::clear_screen() noexcept
 {
-    for (auto&& row : _screen_buffer)
+    for (auto&& row : screen_buffer_)
         for (auto&& pixel : row)
             pixel = false;
 }

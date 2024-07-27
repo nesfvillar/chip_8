@@ -24,9 +24,9 @@ namespace chip_8
             if (x >= WIDTH || y >= HEIGHT)
                 return false;
 
-            bool collision = _screen_buffer[y][x] == pixel;
+            bool collision = screen_buffer_[y][x] == pixel;
 
-            _screen_buffer[y][x] ^= pixel;
+            screen_buffer_[y][x] ^= pixel;
             return collision;
         }
 
@@ -34,7 +34,7 @@ namespace chip_8
         size_t static constexpr WIDTH = 64;
         size_t static constexpr HEIGHT = 32;
 
-    private:
-        std::array<std::array<bool, WIDTH>, HEIGHT> _screen_buffer;
+    protected:
+        std::array<std::array<bool, WIDTH>, HEIGHT> screen_buffer_;
     };
 }
