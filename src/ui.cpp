@@ -15,6 +15,9 @@ void UserInterface::clear_screen() noexcept
 
 bool UserInterface::draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept
 {
+    x %= WIDTH;
+    y %= HEIGHT;
+
     bool collision = false;
     for (auto [i, sprite] : sprites | std::views::enumerate)
     {
