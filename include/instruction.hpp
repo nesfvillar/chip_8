@@ -371,12 +371,13 @@ namespace chip_8
         };
 
         // ANNN
-        struct Set
+        struct SetIndex
         {
-            constexpr Set(uint16_t location) noexcept : _location(location) {}
+            constexpr SetIndex(uint16_t location) noexcept : _location(location) {}
 
-            void operator()(State&, UserInterface&) const noexcept
+            void operator()(State& state, UserInterface&) const noexcept
             {
+                state.index = _location;
             }
 
         private:
@@ -615,7 +616,7 @@ namespace chip_8
         instruction::ReverseSubtractRegisterRegister,
         instruction::ShiftLeft,
         instruction::SkipIfNotEqRegister,
-        instruction::Set,
+        instruction::SetIndex,
         instruction::JumpPlus,
         instruction::Random,
         instruction::Draw,

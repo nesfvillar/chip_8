@@ -48,7 +48,7 @@ namespace chip_8
         case 0x9:
             if (opcode.n() == 0) return SkipIfNotEqRegister{ opcode.x(), opcode.y() };
             else return std::nullopt;
-        case 0xA: return Set{ opcode.nnn() };
+        case 0xA: return SetIndex{ opcode.nnn() };
         case 0xB: return JumpPlus{ opcode.nnn() };
         case 0xC: return Random{ opcode.x(), 0xFF, opcode.nn() };
         case 0xD: return Draw{ opcode.x(), opcode.y(), opcode.n() };
