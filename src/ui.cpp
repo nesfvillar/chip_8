@@ -21,7 +21,7 @@ bool UserInterface::draw(std::span<const Sprite> sprites, size_t x, size_t y) no
         auto y_pixel = y + i;
         for (auto j = 7; j >= 0; j--)
         {
-            auto x_pixel = x + j;
+            auto x_pixel = x + 7 - j;
             auto pixel = (sprite & (1 << j)) >> j;
 
             collision |= _draw_pixel(pixel, x_pixel, y_pixel);
