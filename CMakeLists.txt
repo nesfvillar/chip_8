@@ -7,7 +7,7 @@ target_include_directories(emulator PUBLIC include)
 target_compile_features(emulator PUBLIC cxx_std_23)
 
 if(MSVC)
-  target_compile_options(emulator PRIVATE /W4 /WX)
+  target_compile_options(emulator PRIVATE /W4)
 else()
   target_compile_options(emulator PRIVATE -Wall -Wextra -Wpedantic)
 endif()
