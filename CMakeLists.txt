@@ -3,6 +3,7 @@ project(chip-8 VERSION 0.1.0 LANGUAGES CXX)
 
 
 add_executable(emulator src/emulator.cpp src/ui.cpp)
+target_include_directories(emulator PUBLIC include)
 target_compile_features(emulator PUBLIC cxx_std_23)
 
 if(MSVC)
