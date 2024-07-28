@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <ranges>
 #include <span>
 
 
@@ -14,9 +15,35 @@ namespace chip_8
     public:
         virtual ~UserInterface() noexcept = default;
 
-        void clear_screen() noexcept;
+        void virtual render() noexcept = 0;
 
-        bool virtual draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept;
+        void constexpr clear_buffer() noexcept
+        {
+            for (auto&& row : screen_buffer_)
+                for (auto&& pixel : row)
+                    pixel = false;
+        }
+
+        bool constexpr draw_sprites(std::span<const Sprite> sprites, size_t x, size_t y) noexcept
+        {
+            x %= WIDTH;
+            y %= HEIGHT;
+
+            bool collision = false;
+            for (auto [i, sprite] : sprites | std::views::enumerate)
+            {
+                auto y_pixel = y + i;
+                for (auto j = 7; j >= 0; j--)
+                {
+                    auto x_pixel = x + 7 - j;
+                    auto pixel = (sprite & (1 << j)) >> j;
+
+                    collision |= _draw_pixel(pixel, x_pixel, y_pixel);
+                }
+            }
+
+            return collision;
+        }
 
     private:
         bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept
@@ -43,6 +70,6 @@ namespace chip_8
     public:
         TerminalUserInterface() noexcept = default;
 
-        bool draw(std::span<const Sprite> sprites, size_t x, size_t y) noexcept override;
+        void render() noexcept override;
     };
 }

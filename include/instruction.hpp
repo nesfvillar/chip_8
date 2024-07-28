@@ -31,7 +31,7 @@ namespace chip_8
         {
             void operator()(State&, UserInterface& ui) const noexcept
             {
-                ui.clear_screen();
+                ui.clear_buffer();
             }
         };
 
@@ -433,7 +433,7 @@ namespace chip_8
                     | std::views::drop(state.index)
                     | std::views::take(_size);
 
-                state.registers[0xF] = ui.draw(std::span<Sprite>{ indices }, x_value, y_value);
+                state.registers[0xF] = ui.draw_sprites(std::span<Sprite>{ indices }, x_value, y_value);
             }
 
         private:
