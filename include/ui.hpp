@@ -68,7 +68,15 @@ namespace chip_8
     class TerminalUserInterface : public UserInterface
     {
     public:
-        TerminalUserInterface() noexcept = default;
+        constexpr TerminalUserInterface() noexcept = default;
+
+        void render() noexcept override;
+    };
+
+    class RaylibUserInterface : public UserInterface
+    {
+    public:
+        RaylibUserInterface() noexcept = default;
 
         void render() noexcept override;
     };
