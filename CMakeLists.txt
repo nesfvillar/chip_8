@@ -3,17 +3,18 @@ project(chip-8 VERSION 0.1.0 LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
-  raylib
-  GIT_REPOSITORY https://github.com/raysan5/raylib.git
-  GIT_TAG        a8ec8472ff29b228f6c51b4156d140d4783fd33a
-  FIND_PACKAGE_ARGS
+  ftxui
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI.git
+  GIT_TAG        cdf28903a7781f97ba94d30b79c3a4b0c97ccce7
 )
-FetchContent_MakeAvailable(raylib)
+FetchContent_MakeAvailable(ftxui)
 
 add_executable(emulator src/emulator.cpp src/ui.cpp)
 target_include_directories(emulator PUBLIC include)
-target_compile_features(emulator PUBLIC cxx_std_23)
-target_link_libraries(emulator raylib)
+target_link_libraries(emulator PRIVATE
+  ftxui::screen
+  ftxui::dom
+  ftxui::component)
 
 if(MSVC)
   target_compile_options(emulator PRIVATE /W4)
