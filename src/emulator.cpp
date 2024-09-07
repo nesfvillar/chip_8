@@ -32,19 +32,14 @@ int main(int argc, char** argv)
 
     auto program = read_binary(argv[1]);
 
-    InitWindow(800, 600, "Chip-8 Emulator");
-    SetTargetFPS(60);
+    TerminalUserInterface ui{};
+    Cpu cpu{program, ui};
 
-    RaylibUserInterface ui{ };
-    Cpu cpu{ program, ui };
-
-    while (!WindowShouldClose())
+    while (true)
     {
         ui.render();
 
         if (auto next = cpu.next_operation())
             cpu.execute_operation(*next);
-        else
-            CloseWindow();
     }
 }

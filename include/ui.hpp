@@ -72,12 +72,4 @@ namespace chip_8
 
         void render() noexcept override;
     };
-
-    class RaylibUserInterface : public UserInterface
-    {
-    public:
-        RaylibUserInterface() noexcept = default;
-
-        void render() noexcept override;
-    };
 }
