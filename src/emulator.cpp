@@ -7,6 +7,7 @@
 #include <raylib.h>
 #include <vector>
 
+#include <ftxui/component/screen_interactive.hpp>
 
 using namespace chip_8;
 
@@ -25,6 +26,8 @@ auto read_binary(std::filesystem::path const& path)
 
 int main(int argc, char** argv)
 {
+    using namespace ftxui;
+
     if (argc != 2)
     {
         std::exit(1);
@@ -35,11 +38,25 @@ int main(int argc, char** argv)
     TerminalUserInterface ui{};
     Cpu cpu{program, ui};
 
-    while (true)
-    {
-        ui.render();
+    auto screen = ScreenInteractive::FitComponent();
 
-        if (auto next = cpu.next_operation())
-            cpu.execute_operation(*next);
-    }
+    auto main_renderer = Renderer(
+        [&]
+        {
+            for (auto i = 0; i < 11; i++)
+            {
+                auto next = cpu.next_operation();
+                if (next)
+                {
+                    cpu.execute_operation(*next);
+                    if (std::holds_alternative<instruction::Draw>(*next))
+                    {
+                        screen.RequestAnimationFrame();
+                    }
+                }
+            }
+            return ui.canvas();
+        });
+
+    screen.Loop(main_renderer | border);
 }

@@ -70,6 +70,8 @@ namespace chip_8
     public:
         constexpr TerminalUserInterface() noexcept = default;
 
-        void render() noexcept override;
+        void render() noexcept override {}
+
+        ftxui::Element canvas();
     };
 }
