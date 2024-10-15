@@ -21,7 +21,3 @@ if(MSVC)
 else()
   target_compile_options(emulator PRIVATE -Wall -Wextra -Wpedantic)
 endif()
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)

@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-using namespace chip_8;
 
+using namespace chip_8;
 
 void TerminalUserInterface::render() noexcept
 {

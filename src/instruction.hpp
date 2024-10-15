@@ -23,7 +23,7 @@ namespace chip_8
             }
 
         private:
-            size_t const _location;
+            size_t _location;
         };
 
         // 00E0
@@ -58,7 +58,7 @@ namespace chip_8
             }
 
         private:
-            uint16_t const _location;
+            uint16_t _location;
         };
 
         // 2NNN
@@ -73,7 +73,7 @@ namespace chip_8
             }
 
         private:
-            uint16_t const _location;
+            uint16_t _location;
         };
 
         // 3XNN
@@ -92,8 +92,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
-            uint8_t const _value;
+            uint8_t _register;
+            uint8_t _value;
         };
 
         // 4XNN
@@ -112,8 +112,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
-            uint8_t const _value;
+            uint8_t _register;
+            uint8_t _value;
         };
 
         // 5XY0
@@ -135,8 +135,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 6XNN
@@ -152,8 +152,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
-            uint8_t const _value;
+            uint8_t _register;
+            uint8_t _value;
         };
 
         // 7XNN
@@ -169,8 +169,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
-            uint8_t const _value;
+            uint8_t _register;
+            uint8_t _value;
         };
 
         // 8XY0
@@ -186,8 +186,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY1
@@ -206,8 +206,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY2
@@ -226,8 +226,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY3
@@ -246,8 +246,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY4
@@ -267,8 +267,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY5
@@ -288,8 +288,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XY6
@@ -306,7 +306,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // 8XY7
@@ -326,8 +326,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // 8XYE
@@ -344,7 +344,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // 9XY0
@@ -366,8 +366,8 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
+            uint8_t _x_register;
+            uint8_t _y_register;
         };
 
         // ANNN
@@ -381,7 +381,7 @@ namespace chip_8
             }
 
         private:
-            uint16_t const _location;
+            uint16_t _location;
         };
 
         // BNNN
@@ -394,7 +394,7 @@ namespace chip_8
             }
 
         private:
-            uint16_t const _location;
+            uint16_t _location;
         };
 
         // CXNN
@@ -411,9 +411,9 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
-            uint8_t const _mask;
-            uint8_t const _random_value;
+            uint8_t _register;
+            uint8_t _mask;
+            uint8_t _random_value;
         };
 
         // DXYN
@@ -437,9 +437,9 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _x_register;
-            uint8_t const _y_register;
-            uint8_t const _size;
+            uint8_t _x_register;
+            uint8_t _y_register;
+            uint8_t _size;
         };
 
         // EX9E
@@ -452,7 +452,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // EXA1
@@ -465,7 +465,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX07
@@ -481,7 +481,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX0A
@@ -494,7 +494,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX15
@@ -510,7 +510,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX18
@@ -526,7 +526,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX1E
@@ -539,7 +539,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX29
@@ -552,7 +552,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX33
@@ -565,7 +565,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX55
@@ -578,7 +578,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
 
         // FX65
@@ -591,7 +591,7 @@ namespace chip_8
             }
 
         private:
-            uint8_t const _register;
+            uint8_t _register;
         };
     }
 
