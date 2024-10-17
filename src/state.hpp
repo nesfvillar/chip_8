@@ -8,13 +8,10 @@
 
 namespace chip_8 {
 struct State {
-public:
-  constexpr State(std::ranges::view auto program) : Cpu(program) {}
-
-private:
-public:
   Cpu cpu;
   Screen screen;
   Keyboard keyboard;
+
+  constexpr State(std::ranges::view auto program) : cpu(program) {}
 };
 } // namespace chip_8
