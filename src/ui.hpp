@@ -5,73 +5,60 @@
 #include <ranges>
 #include <span>
 
+namespace chip_8 {
+using Sprite = uint8_t;
 
-namespace chip_8
-{
-    using Sprite = uint8_t;
+class UserInterface {
+public:
+  virtual ~UserInterface() noexcept = default;
+  void virtual render() noexcept = 0;
 
-    class UserInterface
-    {
-    public:
-        virtual ~UserInterface() noexcept = default;
+  void constexpr clear_buffer() noexcept {
+    for (auto &&row : screen_buffer_)
+      for (auto &&pixel : row)
+        pixel = false;
+  }
 
-        void virtual render() noexcept = 0;
+  bool constexpr draw_sprites(std::span<const Sprite> sprites, size_t x,
+                              size_t y) noexcept {
+    x %= WIDTH;
+    y %= HEIGHT;
 
-        void constexpr clear_buffer() noexcept
-        {
-            for (auto&& row : screen_buffer_)
-                for (auto&& pixel : row)
-                    pixel = false;
-        }
+    bool collision = false;
+    for (auto [i, sprite] : sprites | std::views::enumerate) {
+      auto y_pixel = y + i;
+      for (auto j = 7; j >= 0; j--) {
+        auto x_pixel = x + 7 - j;
+        auto pixel = (sprite & (1 << j)) >> j;
 
-        bool constexpr draw_sprites(std::span<const Sprite> sprites, size_t x, size_t y) noexcept
-        {
-            x %= WIDTH;
-            y %= HEIGHT;
+        collision |= _draw_pixel(pixel, x_pixel, y_pixel);
+      }
+    }
 
-            bool collision = false;
-            for (auto [i, sprite] : sprites | std::views::enumerate)
-            {
-                auto y_pixel = y + i;
-                for (auto j = 7; j >= 0; j--)
-                {
-                    auto x_pixel = x + 7 - j;
-                    auto pixel = (sprite & (1 << j)) >> j;
+    return collision;
+  }
 
-                    collision |= _draw_pixel(pixel, x_pixel, y_pixel);
-                }
-            }
+private:
+  bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept {
+    if (x >= WIDTH || y >= HEIGHT)
+      return false;
 
-            return collision;
-        }
+    bool collision = screen_buffer_[y][x] && (screen_buffer_[y][x] == pixel);
 
-    private:
-        bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept
-        {
-            if (x >= WIDTH || y >= HEIGHT)
-                return false;
+    screen_buffer_[y][x] = pixel && !collision;
+    return collision;
+  }
 
-            bool collision = screen_buffer_[y][x] && (screen_buffer_[y][x] == pixel);
+public:
+  size_t static constexpr WIDTH = 64;
+  size_t static constexpr HEIGHT = 32;
 
-            screen_buffer_[y][x] = pixel && !collision;
-            return collision;
-        }
+protected:
+  std::array<std::array<bool, WIDTH>, HEIGHT> screen_buffer_;
+};
 
-    public:
-        size_t static constexpr WIDTH = 64;
-        size_t static constexpr HEIGHT = 32;
-
-    protected:
-        std::array<std::array<bool, WIDTH>, HEIGHT> screen_buffer_;
-    };
-
-    class TerminalUserInterface : public UserInterface
-    {
-    public:
-        constexpr TerminalUserInterface() noexcept = default;
-
-        void render() noexcept override {}
-
-        ftxui::Element canvas();
-    };
-}
+class TerminalUserInterface : public UserInterface {
+public:
+  void render() noexcept override;
+};
+} // namespace chip_8
