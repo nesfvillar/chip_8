@@ -1,6 +1,6 @@
 #pragma once
 
-#include "opcode.hpp"
+#include "ui.hpp"
 
 #include <algorithm>
 #include <array>
@@ -13,17 +13,12 @@ enum Timer { DELAY, SOUND };
 
 struct State {
 public:
-  constexpr State() noexcept = default;
+  constexpr State(UserInterface *ui) noexcept : ui(ui) {}
 
-  constexpr State(std::ranges::range auto const &program) noexcept {
+  constexpr State(std::ranges::range auto const &program,
+                  UserInterface *ui) noexcept
+      : State(ui) {
     std::ranges::copy(program, memory.begin() + _PROGRAM_START);
-  }
-
-  Opcode constexpr fetch_instruction(uint16_t location) const {
-    auto high_byte = memory.at(location);
-    auto low_byte = memory.at(location + 1);
-
-    return Opcode{high_byte, low_byte};
   }
 
 private:
@@ -33,6 +28,8 @@ private:
   size_t static constexpr _TIMERS_SIZE = 0x2;
 
 public:
+  UserInterface *ui;
+
   std::array<uint8_t, _MEMORY_SIZE> memory{};
   std::array<uint8_t, _REGISTERS_SIZE> registers{};
   std::vector<uint16_t> stack{};
