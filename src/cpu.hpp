@@ -10,7 +10,7 @@ enum Timer { DELAY, SOUND };
 
 class Cpu {
 public:
-  constexpr Cpu(std::ranges::view auto program) {
+  constexpr Cpu(std::ranges::view auto const &program) {
     std::ranges::copy(program, memory.begin() + _PROGRAM_START);
   }
 

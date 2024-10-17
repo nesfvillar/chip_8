@@ -10,3 +10,6 @@ std::vector<uint8_t> read_binary(std::filesystem::path const &path) {
 
   return std::vector<uint8_t>(it, end);
 }
+
+Emulator::Emulator(std::filesystem::path const &path)
+    : _state(std::views::all(read_binary(path))) {}
