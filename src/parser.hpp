@@ -4,9 +4,9 @@
 #include "opcode.hpp"
 
 #include <optional>
-#include <ranges>
 
 namespace chip_8 {
+[[nodiscard]]
 std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
   using namespace instruction;
 
@@ -106,12 +106,5 @@ std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
   default:
     return std::nullopt;
   }
-}
-
-auto constexpr parse(std::ranges::viewable_range auto const &program) noexcept {
-  return program | std::views::chunk(2) | std::views::transform([](auto &&o) {
-           return Opcode{std::get<0>(o), std::get<1>(o)};
-         }) |
-         std::views::transform(decode);
 }
 } // namespace chip_8

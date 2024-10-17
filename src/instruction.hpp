@@ -1,10 +1,7 @@
 #pragma once
 
 #include "state.hpp"
-#include "ui.hpp"
 
-#include <ranges>
-#include <span>
 #include <variant>
 
 namespace chip_8 {
@@ -13,7 +10,7 @@ namespace instruction {
 struct CallMCRoutine {
   constexpr CallMCRoutine(size_t location) noexcept : _location(location) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   size_t _location;
@@ -21,18 +18,16 @@ private:
 
 // 00E0
 struct ClearScreen {
-  void operator()(State &, UserInterface &ui) const noexcept {
-    ui.clear_buffer();
-  }
+  void operator()(State &state) const noexcept { state.screen.clear_buffer(); }
 };
 
 // 00EE
 struct ReturnSubroutine {
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto location = state.stack.back();
-    state.stack.pop_back();
+  void operator()(State &state) const noexcept {
+    auto location = state.cpu.stack.back();
+    state.cpu.stack.pop_back();
 
-    state.program_counter = location;
+    state.cpu.program_counter = location;
   }
 };
 
@@ -40,8 +35,8 @@ struct ReturnSubroutine {
 struct Jump {
   constexpr Jump(size_t location) noexcept : _location(location) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.program_counter = _location;
+  void operator()(State &state) const noexcept {
+    state.cpu.program_counter = _location;
   }
 
 private:
@@ -52,9 +47,9 @@ private:
 struct CallSubroutine {
   constexpr CallSubroutine(size_t location) noexcept : _location(location) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.stack.push_back(state.program_counter);
-    state.program_counter = _location;
+  void operator()(State &state) const {
+    state.cpu.stack.push_back(state.cpu.program_counter);
+    state.cpu.program_counter = _location;
   }
 
 private:
@@ -66,9 +61,9 @@ struct SkipIfEqValue {
   constexpr SkipIfEqValue(uint8_t reg, uint8_t value) noexcept
       : _register(reg), _value(value) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    if (state.registers.at(_register) == _value) {
-      state.program_counter += 2;
+  void operator()(State &state) const noexcept {
+    if (state.cpu.registers[_register] == _value) {
+      state.cpu.step_program_counter();
     }
   }
 
@@ -82,9 +77,9 @@ struct SkipIfNotEqValue {
   constexpr SkipIfNotEqValue(uint8_t reg, uint8_t value) noexcept
       : _register(reg), _value(value) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    if (state.registers.at(_register) != _value) {
-      state.program_counter += 2;
+  void operator()(State &state) const noexcept {
+    if (state.cpu.registers[_register] != _value) {
+      state.cpu.step_program_counter();
     }
   }
 
@@ -98,12 +93,12 @@ struct SkipIfEqRegister {
   constexpr SkipIfEqRegister(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
     if (x_value == y_value) {
-      state.program_counter += 2;
+      state.cpu.step_program_counter();
     }
   }
 
@@ -117,8 +112,8 @@ struct SetRegisterToValue {
   constexpr SetRegisterToValue(uint8_t reg, uint8_t value) noexcept
       : _register(reg), _value(value) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.registers.at(_register) = _value;
+  void operator()(State &state) const noexcept {
+    state.cpu.registers[_register] = _value;
   }
 
 private:
@@ -131,8 +126,8 @@ struct AddRegisterValue {
   constexpr AddRegisterValue(uint8_t reg, uint8_t value) noexcept
       : _register(reg), _value(value) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.registers.at(_register) += _value;
+  void operator()(State &state) const noexcept {
+    state.cpu.registers[_register] += _value;
   }
 
 private:
@@ -146,8 +141,8 @@ struct SetRegisterToRegister {
                                   uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.registers.at(_x_register) = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    state.cpu.registers[_x_register] = state.cpu.registers[_y_register];
   }
 
 private:
@@ -160,11 +155,11 @@ struct Or {
   constexpr Or(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = x_value | y_value;
+    state.cpu.registers[_x_register] = x_value | y_value;
   }
 
 private:
@@ -177,11 +172,11 @@ struct And {
   constexpr And(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = x_value & y_value;
+    state.cpu.registers[_x_register] = x_value & y_value;
   }
 
 private:
@@ -194,11 +189,11 @@ struct Xor {
   constexpr Xor(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = x_value ^ y_value;
+    state.cpu.registers[_x_register] = x_value ^ y_value;
   }
 
 private:
@@ -211,12 +206,12 @@ struct AddRegisterRegister {
   constexpr AddRegisterRegister(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = x_value + y_value;
-    state.registers[0x0F] = 0xFFFF - x_value <= y_value;
+    state.cpu.registers[_x_register] = x_value + y_value;
+    state.cpu.set_flag(0xFFFF - x_value <= y_value);
   }
 
 private:
@@ -230,12 +225,12 @@ struct SubtractRegisterRegister {
                                      uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = x_value - y_value;
-    state.registers[0x0F] = x_value > y_value;
+    state.cpu.registers[_x_register] = x_value - y_value;
+    state.cpu.set_flag(x_value > y_value);
   }
 
 private:
@@ -247,11 +242,11 @@ private:
 struct ShiftRight {
   constexpr ShiftRight(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_register];
 
-    state.registers.at(_register) = x_value >> 1;
-    state.registers[0x0F] = x_value & 1;
+    state.cpu.registers[_register] = x_value >> 1;
+    state.cpu.set_flag(x_value & 1);
   }
 
 private:
@@ -264,12 +259,12 @@ struct ReverseSubtractRegisterRegister {
                                             uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    state.registers.at(_x_register) = y_value - x_value;
-    state.registers[0x0F] = y_value > x_value;
+    state.cpu.registers[_x_register] = y_value - x_value;
+    state.cpu.set_flag(y_value > x_value);
   }
 
 private:
@@ -281,11 +276,11 @@ private:
 struct ShiftLeft {
   constexpr ShiftLeft(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto value = state.registers.at(_register);
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
 
-    state.registers.at(_register) = value << 1;
-    state.registers[0x0F] = (value & (1 << 7)) > 0;
+    state.cpu.registers[_register] = value << 1;
+    state.cpu.set_flag((value & (1 << 7)) > 0);
   }
 
 private:
@@ -297,12 +292,12 @@ struct SkipIfNotEqRegister {
   constexpr SkipIfNotEqRegister(uint8_t x_register, uint8_t y_register) noexcept
       : _x_register(x_register), _y_register(y_register) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
     if (x_value != y_value) {
-      state.program_counter += 2;
+      state.cpu.program_counter += 2;
     }
   }
 
@@ -315,9 +310,7 @@ private:
 struct SetIndex {
   constexpr SetIndex(uint16_t location) noexcept : _location(location) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.index = _location;
-  }
+  void operator()(State &state) const noexcept { state.cpu.index = _location; }
 
 private:
   uint16_t _location;
@@ -327,7 +320,7 @@ private:
 struct JumpPlus {
   constexpr JumpPlus(uint16_t location) noexcept : _location(location) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint16_t _location;
@@ -338,8 +331,8 @@ struct Random {
   constexpr Random(uint8_t reg, uint8_t mask, uint8_t random_value) noexcept
       : _register(reg), _mask(mask), _random_value(random_value) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    state.registers.at(_register) = _random_value & _mask;
+  void operator()(State &state) const noexcept {
+    state.cpu.registers[_register] = _random_value & _mask;
   }
 
 private:
@@ -353,15 +346,14 @@ struct Draw {
   constexpr Draw(uint8_t x_register, uint8_t y_register, uint8_t size) noexcept
       : _x_register(x_register), _y_register(y_register), _size(size) {}
 
-  void operator()(State &state, UserInterface &ui) const noexcept {
-    auto x_value = state.registers.at(_x_register);
-    auto y_value = state.registers.at(_y_register);
+  void operator()(State &state) const noexcept {
+    auto x_value = state.cpu.registers[_x_register];
+    auto y_value = state.cpu.registers[_y_register];
 
-    auto indices =
-        state.memory | std::views::drop(state.index) | std::views::take(_size);
+    auto indices = state.cpu.memory | std::views::drop(state.cpu.index) |
+                   std::views::take(_size);
 
-    state.registers[0xF] =
-        ui.draw_sprites(std::span<Sprite>{indices}, x_value, y_value);
+    state.cpu.set_flag(state.screen.draw_sprites(indices, x_value, y_value));
   }
 
 private:
@@ -374,7 +366,7 @@ private:
 struct SkipIfKeyPressed {
   constexpr SkipIfKeyPressed(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -384,7 +376,7 @@ private:
 struct SkipIfKeyNotPressed {
   constexpr SkipIfKeyNotPressed(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -394,10 +386,10 @@ private:
 struct GetDelay {
   constexpr GetDelay(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto delay = state.timers[Timer::DELAY];
+  void operator()(State &state) const noexcept {
+    auto delay = state.cpu.timers[Timer::DELAY];
 
-    state.registers.at(_register) = delay;
+    state.cpu.registers[_register] = delay;
   }
 
 private:
@@ -408,7 +400,7 @@ private:
 struct GetKeyBlocking {
   constexpr GetKeyBlocking(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -418,10 +410,10 @@ private:
 struct SetDelay {
   constexpr SetDelay(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto value = state.registers.at(_register);
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
 
-    state.timers[Timer::DELAY] = value;
+    state.cpu.timers[Timer::DELAY] = value;
   }
 
 private:
@@ -432,10 +424,10 @@ private:
 struct SetSound {
   constexpr SetSound(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &state, UserInterface &) const noexcept {
-    auto value = state.registers.at(_register);
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
 
-    state.timers[Timer::SOUND] = value;
+    state.cpu.timers[Timer::SOUND] = value;
   }
 
 private:
@@ -446,7 +438,7 @@ private:
 struct AddToAdress {
   constexpr AddToAdress(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -456,7 +448,7 @@ private:
 struct SetAdressToSprite {
   constexpr SetAdressToSprite(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -466,7 +458,7 @@ private:
 struct StoreBCDAtAdress {
   constexpr StoreBCDAtAdress(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -476,7 +468,7 @@ private:
 struct DumpRegisters {
   constexpr DumpRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;
@@ -486,7 +478,7 @@ private:
 struct LoadRegisters {
   constexpr LoadRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &, UserInterface &) const noexcept {}
+  void operator()(State &) const noexcept {}
 
 private:
   uint8_t _register;

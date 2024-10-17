@@ -8,13 +8,15 @@
 namespace chip_8 {
 using Sprite = uint8_t;
 
-class UserInterface {
+class Screen {
 public:
-  virtual ~UserInterface() noexcept = default;
-  void virtual render() noexcept = 0;
+  [[nodiscard]]
+  auto const &buffer() const noexcept {
+    return _buffer;
+  }
 
   void constexpr clear_buffer() noexcept {
-    for (auto &&row : screen_buffer_)
+    for (auto &&row : _buffer)
       for (auto &&pixel : row)
         pixel = false;
   }
@@ -43,9 +45,9 @@ private:
     if (x >= WIDTH || y >= HEIGHT)
       return false;
 
-    bool collision = screen_buffer_[y][x] && (screen_buffer_[y][x] == pixel);
+    bool collision = _buffer[y][x] && (_buffer[y][x] == pixel);
 
-    screen_buffer_[y][x] = pixel && !collision;
+    _buffer[y][x] = pixel && !collision;
     return collision;
   }
 
@@ -53,12 +55,7 @@ public:
   size_t static constexpr WIDTH = 64;
   size_t static constexpr HEIGHT = 32;
 
-protected:
-  std::array<std::array<bool, WIDTH>, HEIGHT> screen_buffer_;
-};
-
-class TerminalUserInterface : public UserInterface {
-public:
-  void render() noexcept override;
+private:
+  std::array<std::array<bool, WIDTH>, HEIGHT> _buffer{};
 };
 } // namespace chip_8
