@@ -19,8 +19,8 @@ void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
   gtk_widget_get_color(GTK_WIDGET(area), &color);
   gdk_cairo_set_source_rgba(cr, &color);
 
-  int pixel_height = APP_HEIGHT / Screen::HEIGHT;
-  int pixel_width = APP_WIDTH / Screen::WIDTH;
+  int pixel_height = height / Screen::HEIGHT;
+  int pixel_width = width / Screen::WIDTH;
   for (auto y = 0; y < Screen::HEIGHT; y++) {
     for (auto x = 0; x < Screen::WIDTH; x++) {
       if ((*screen)[y][x]) {
