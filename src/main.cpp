@@ -25,8 +25,8 @@ void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
 
   int pixel_height = height / Screen::HEIGHT;
   int pixel_width = width / Screen::WIDTH;
-  for (auto y = 0; y < Screen::HEIGHT; y++) {
-    for (auto x = 0; x < Screen::WIDTH; x++) {
+  for (size_t y = 0; y < Screen::HEIGHT; y++) {
+    for (size_t x = 0; x < Screen::WIDTH; x++) {
       if (screen[y][x]) {
         cairo_rectangle(cr, x * pixel_width, y * pixel_height, pixel_width,
                         pixel_height);
