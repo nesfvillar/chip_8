@@ -17,6 +17,8 @@ public:
 
   Emulator(std::filesystem::path const &path);
 
+  State const &state() const noexcept { return _state; }
+
 private:
   [[nodiscard]]
   Opcode constexpr fetch_opcode(uint16_t location) const {
