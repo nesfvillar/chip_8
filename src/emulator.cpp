@@ -12,4 +12,4 @@ std::vector<uint8_t> read_binary(std::filesystem::path const &path) {
 }
 
 Emulator::Emulator(std::filesystem::path const &path)
-    : _state(std::views::all(read_binary(path))) {}
+    : Emulator(std::views::all(read_binary(path))) {}
