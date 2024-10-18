@@ -12,7 +12,7 @@ size_t constexpr APP_HEIGHT = 600;
 
 void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
           gpointer data) {
-  auto screen = static_cast<
+  auto screen = *static_cast<
       std::array<std::array<bool, Screen::WIDTH>, Screen::HEIGHT> *>(data);
 
   GdkRGBA color;
@@ -23,7 +23,7 @@ void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
   int pixel_width = width / Screen::WIDTH;
   for (auto y = 0; y < Screen::HEIGHT; y++) {
     for (auto x = 0; x < Screen::WIDTH; x++) {
-      if ((*screen)[y][x]) {
+      if (screen[y][x]) {
         cairo_rectangle(cr, x * pixel_width, y * pixel_height, pixel_width,
                         pixel_height);
       }
