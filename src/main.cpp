@@ -12,6 +12,10 @@ size_t constexpr APP_HEIGHT = 600;
 
 void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
           gpointer data) {
+  if (data == nullptr) {
+    return;
+  }
+
   auto screen = *static_cast<
       std::array<std::array<bool, Screen::WIDTH>, Screen::HEIGHT> *>(data);
 
