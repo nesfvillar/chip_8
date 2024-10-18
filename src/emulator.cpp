@@ -4,7 +4,7 @@
 
 using namespace chip_8;
 
-std::vector<uint8_t> read_binary(std::filesystem::path const &path) {
+std::vector<uint8_t> chip_8::read_binary(std::filesystem::path const &path) {
   std::ifstream ifstream{path, std::ios::binary};
   std::istreambuf_iterator<char> it{ifstream}, end;
 
