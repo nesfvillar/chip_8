@@ -12,8 +12,7 @@ size_t constexpr APP_HEIGHT = 600;
 
 void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
              gpointer data) {
-  auto screen = *static_cast<Screen *>(data);
-  auto screen_buffer = screen.buffer();
+  auto screen_buffer = static_cast<Screen *>(data)->buffer();
 
   int pixel_height = height / Screen::HEIGHT;
   int pixel_width = width / Screen::WIDTH;
@@ -37,7 +36,7 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
 
   bool should_draw = false;
   for (auto i = 0; i < 11; i++) {
-    should_draw = should_draw || e.step();
+    should_draw |= e.step();
   }
 
   if (should_draw) {
