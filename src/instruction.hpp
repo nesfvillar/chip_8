@@ -370,7 +370,13 @@ private:
 struct SkipIfKeyPressed {
   constexpr SkipIfKeyPressed(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
+
+    if (state.keyboard[value]) {
+      state.cpu.step_program_counter();
+    }
+  }
 
 private:
   uint8_t _register;
@@ -380,7 +386,13 @@ private:
 struct SkipIfKeyNotPressed {
   constexpr SkipIfKeyNotPressed(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
+
+    if (!state.keyboard[value]) {
+      state.cpu.step_program_counter();
+    }
+  }
 
 private:
   uint8_t _register;
@@ -404,7 +416,16 @@ private:
 struct GetKeyBlocking {
   constexpr GetKeyBlocking(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const noexcept {
+    for (uint8_t n = 0; n < Keyboard::SIZE; n++) {
+      if (state.keyboard[n]) {
+        state.cpu.registers[_register] = n;
+        return;
+      }
+    }
+
+    state.cpu.step_program_counter(-1);
+  }
 
 private:
   uint8_t _register;
