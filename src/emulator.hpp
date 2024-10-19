@@ -19,6 +19,8 @@ public:
 
   State const &state() const noexcept { return _state; }
 
+  void step();
+
 private:
   [[nodiscard]]
   Opcode constexpr fetch_opcode(uint16_t location) const {
