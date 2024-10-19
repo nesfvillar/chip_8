@@ -320,7 +320,11 @@ private:
 struct JumpPlus {
   constexpr JumpPlus(uint16_t location) noexcept : _location(location) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[0];
+
+    state.cpu.program_counter = _location + value;
+  }
 
 private:
   uint16_t _location;
