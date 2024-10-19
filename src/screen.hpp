@@ -2,7 +2,6 @@
 
 #include <array>
 #include <cstdint>
-#include <ranges>
 #include <span>
 
 namespace chip_8 {
@@ -27,11 +26,12 @@ public:
     y %= HEIGHT;
 
     bool collision = false;
-    for (auto [i, sprite] : sprites | std::views::enumerate) {
-      auto y_pixel = y + i;
-      for (auto j = 7; j >= 0; j--) {
+    for (size_t i = 0; i < sprites.size(); i++) {
+      for (auto j = 0; j < 8; j++) {
+        auto y_pixel = y + i;
         auto x_pixel = x + 7 - j;
-        auto pixel = (sprite & (1 << j)) >> j;
+
+        auto pixel = (sprites[i] & 1 << j) > 0;
 
         collision |= _draw_pixel(pixel, x_pixel, y_pixel);
       }
@@ -42,13 +42,11 @@ public:
 
 private:
   bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept {
-    if (x >= WIDTH || y >= HEIGHT)
+    if (x >= WIDTH || y >= HEIGHT) {
       return false;
+    }
 
-    bool collision = _buffer[y][x] && (_buffer[y][x] == pixel);
-
-    _buffer[y][x] = pixel && !collision;
-    return collision;
+    return _buffer[y][x] ^= pixel;
   }
 
 public:
