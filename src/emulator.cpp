@@ -13,15 +13,16 @@ std::vector<uint8_t> chip_8::read_binary(std::filesystem::path const &path) {
   return std::vector<uint8_t>(it, end);
 }
 
-Emulator::Emulator(std::filesystem::path const &path)
-    : Emulator(std::views::all(read_binary(path))) {}
-
-void Emulator::step() {
+bool Emulator::step() {
   auto opcode = fetch_opcode(_state.cpu.program_counter);
   _state.cpu.step_program_counter();
 
   auto instruction = decode(opcode);
   if (instruction) {
     std::visit([this](auto &&i) { return i(_state); }, *instruction);
+    if (std::holds_alternative<instruction::Draw>(*instruction)) {
+      return true;
+    }
   }
+  return false;
 }

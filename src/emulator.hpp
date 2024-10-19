@@ -15,11 +15,9 @@ class Emulator {
 public:
   constexpr Emulator(std::ranges::view auto const &program) : _state(program) {}
 
-  Emulator(std::filesystem::path const &path);
-
   State const &state() const noexcept { return _state; }
 
-  void step();
+  bool step();
 
 private:
   [[nodiscard]]
