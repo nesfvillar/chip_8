@@ -1,5 +1,5 @@
 project('chip_8', 'cpp',
-  default_options : ['cpp_std=c++23'])
+  default_options : ['cpp_std=c++23', 'warning_level=3'])
 
 src = ['main.cpp', 'emulator.cpp']
 
