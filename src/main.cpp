@@ -32,7 +32,7 @@ void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
 }
 
 gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
-  auto e = *static_cast<Emulator *>(data);
+  auto &&e = *static_cast<Emulator *>(data);
 
   bool should_draw = false;
   for (auto i = 0; i < 11; i++) {
@@ -47,7 +47,7 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
 }
 
 void activate_cb(GtkApplication *app, Emulator *emulator) {
-  auto state = emulator->state();
+  auto &&state = const_cast<State &>(emulator->state());
 
   auto window = adw_application_window_new(app);
   auto toolbar = adw_toolbar_view_new();
