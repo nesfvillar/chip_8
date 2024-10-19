@@ -10,17 +10,10 @@ std::string_view constexpr APP_ID = "org.nesfvillar.chip_8";
 size_t constexpr APP_WIDTH = 800;
 size_t constexpr APP_HEIGHT = 600;
 
-void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
-          gpointer screen) {
-  if (screen == nullptr) {
-    return;
-  }
-
-  auto screen_buffer = static_cast<Screen *>(screen)->buffer();
-
-  GdkRGBA color;
-  gtk_widget_get_color(GTK_WIDGET(area), &color);
-  gdk_cairo_set_source_rgba(cr, &color);
+void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
+             gpointer data) {
+  auto screen = *static_cast<Screen *>(data);
+  auto screen_buffer = screen.buffer();
 
   int pixel_height = height / Screen::HEIGHT;
   int pixel_width = width / Screen::WIDTH;
@@ -32,6 +25,10 @@ void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
       }
     }
   }
+  GdkRGBA color;
+  gtk_widget_get_color(GTK_WIDGET(area), &color);
+  gdk_cairo_set_source_rgba(cr, &color);
+
   cairo_fill(cr);
 }
 
@@ -44,22 +41,18 @@ void activate_cb(GtkApplication *app, Emulator *emulator) {
   auto title = adw_window_title_new(APP_TITLE.data(), nullptr);
   auto drawing_area = gtk_drawing_area_new();
 
-  adw_application_window_set_content(
-      reinterpret_cast<AdwApplicationWindow *>(window), toolbar);
+  adw_application_window_set_content(ADW_APPLICATION_WINDOW(window), toolbar);
 
-  adw_toolbar_view_add_top_bar(reinterpret_cast<AdwToolbarView *>(toolbar),
-                               header);
+  adw_toolbar_view_add_top_bar(ADW_TOOLBAR_VIEW(toolbar), header);
 
-  adw_toolbar_view_set_content(reinterpret_cast<AdwToolbarView *>(toolbar),
-                               drawing_area);
+  adw_toolbar_view_set_content(ADW_TOOLBAR_VIEW(toolbar), drawing_area);
 
-  adw_header_bar_set_title_widget(reinterpret_cast<AdwHeaderBar *>(header),
-                                  title);
+  adw_header_bar_set_title_widget(ADW_HEADER_BAR(header), title);
 
   gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
   gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(drawing_area),
                                       APP_HEIGHT);
-  gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw,
+  gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb,
                                  &state.screen, nullptr);
 
   gtk_window_present(GTK_WINDOW(window));
