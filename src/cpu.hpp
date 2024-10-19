@@ -21,7 +21,7 @@ public:
 
   [[nodiscard]]
   uint16_t fetch_word(uint16_t location) const {
-    return fetch_byte(location) << 4 | fetch_byte(location + 1);
+    return fetch_byte(location) << 8 | fetch_byte(location + 1);
   }
 
   void step_program_counter(uint16_t amount = 1) noexcept {
