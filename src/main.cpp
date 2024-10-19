@@ -32,6 +32,21 @@ void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
   cairo_fill(cr);
 }
 
+gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
+  auto e = *static_cast<Emulator *>(data);
+
+  bool should_draw = false;
+  for (auto i = 0; i < 11; i++) {
+    should_draw = should_draw || e.step();
+  }
+
+  if (should_draw) {
+    gtk_widget_queue_draw(widget);
+  }
+
+  return G_SOURCE_CONTINUE;
+}
+
 void activate_cb(GtkApplication *app, Emulator *emulator) {
   auto state = emulator->state();
 
@@ -54,6 +69,7 @@ void activate_cb(GtkApplication *app, Emulator *emulator) {
                                       APP_HEIGHT);
   gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb,
                                  &state.screen, nullptr);
+  gtk_widget_add_tick_callback(drawing_area, tick_cb, emulator, nullptr);
 
   gtk_window_present(GTK_WINDOW(window));
 }
