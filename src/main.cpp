@@ -12,7 +12,7 @@ size_t constexpr APP_HEIGHT = 600;
 
 void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
              gpointer data) {
-  auto screen_buffer = static_cast<Screen *>(data)->buffer();
+  auto &&screen_buffer = static_cast<Screen const *>(data)->buffer();
 
   int pixel_height = height / Screen::HEIGHT;
   int pixel_width = width / Screen::WIDTH;
