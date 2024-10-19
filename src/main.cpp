@@ -36,21 +36,31 @@ void draw(GtkDrawingArea *area, cairo_t *cr, int width, int height,
 }
 
 void activate_cb(GtkApplication *app, Emulator *emulator) {
-  auto window = gtk_application_window_new(app);
-
-  gtk_window_set_title(GTK_WINDOW(window), APP_TITLE.data());
-  gtk_window_set_default_size(GTK_WINDOW(window), APP_WIDTH, APP_HEIGHT);
-
   auto state = emulator->state();
 
+  auto window = adw_application_window_new(app);
+  auto toolbar = adw_toolbar_view_new();
+  auto header = adw_header_bar_new();
+  auto title = adw_window_title_new(APP_TITLE.data(), nullptr);
   auto drawing_area = gtk_drawing_area_new();
+
+  adw_application_window_set_content(
+      reinterpret_cast<AdwApplicationWindow *>(window), toolbar);
+
+  adw_toolbar_view_add_top_bar(reinterpret_cast<AdwToolbarView *>(toolbar),
+                               header);
+
+  adw_toolbar_view_set_content(reinterpret_cast<AdwToolbarView *>(toolbar),
+                               drawing_area);
+
+  adw_header_bar_set_title_widget(reinterpret_cast<AdwHeaderBar *>(header),
+                                  title);
+
+  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
   gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(drawing_area),
                                       APP_HEIGHT);
-  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
   gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw,
                                  &state.screen, nullptr);
-
-  gtk_window_set_child(GTK_WINDOW(window), drawing_area);
 
   gtk_window_present(GTK_WINDOW(window));
 }
