@@ -47,8 +47,6 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
 }
 
 void activate_cb(GtkApplication *app, Emulator *emulator) {
-  auto &&state = const_cast<State &>(emulator->state());
-
   auto window = adw_application_window_new(app);
   auto toolbar = adw_toolbar_view_new();
   auto header = adw_header_bar_new();
@@ -66,8 +64,9 @@ void activate_cb(GtkApplication *app, Emulator *emulator) {
   gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
   gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(drawing_area),
                                       APP_HEIGHT);
-  gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb,
-                                 &state.screen, nullptr);
+  gtk_drawing_area_set_draw_func(
+      GTK_DRAWING_AREA(drawing_area), draw_cb,
+      const_cast<Screen *>(&emulator->state().screen), nullptr);
   gtk_widget_add_tick_callback(drawing_area, tick_cb, emulator, nullptr);
 
   gtk_window_present(GTK_WINDOW(window));
