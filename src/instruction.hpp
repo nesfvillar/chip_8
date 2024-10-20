@@ -2,6 +2,7 @@
 
 #include "state.hpp"
 
+#include <algorithm>
 #include <variant>
 
 namespace chip_8 {
@@ -463,7 +464,11 @@ private:
 struct AddToAdress {
   constexpr AddToAdress(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
+
+    state.cpu.index += value;
+  }
 
 private:
   uint8_t _register;
@@ -493,7 +498,11 @@ private:
 struct DumpRegisters {
   constexpr DumpRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const {
+    auto location = state.cpu.memory.begin() + state.cpu.index;
+
+    std::ranges::copy_n(state.cpu.registers.begin(), _register + 1, location);
+  }
 
 private:
   uint8_t _register;
@@ -503,7 +512,11 @@ private:
 struct LoadRegisters {
   constexpr LoadRegisters(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const {
+    auto location = state.cpu.memory.begin() + state.cpu.index;
+
+    std::ranges::copy_n(location, _register + 1, state.cpu.registers.begin());
+  }
 
 private:
   uint8_t _register;
