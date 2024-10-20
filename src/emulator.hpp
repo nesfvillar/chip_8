@@ -13,9 +13,15 @@ std::vector<uint8_t> read_binary(std::filesystem::path const &path);
 
 class Emulator {
 public:
+  constexpr Emulator() noexcept = default;
+
   constexpr Emulator(std::ranges::view auto program) : _state(program) {}
 
   State const &state() const noexcept { return _state; }
+
+  void constexpr load_program(std::ranges::view auto program) {
+    _state = State{program};
+  }
 
   bool step();
 

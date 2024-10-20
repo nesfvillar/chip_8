@@ -10,6 +10,8 @@ enum Timer { DELAY, SOUND };
 
 class Cpu {
 public:
+  constexpr Cpu() noexcept = default;
+
   constexpr Cpu(std::ranges::view auto program) {
     std::ranges::copy(program, memory.begin() + _PROGRAM_START);
   }

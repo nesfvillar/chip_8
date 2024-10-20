@@ -12,6 +12,8 @@ struct State {
   Screen screen;
   Keyboard keyboard;
 
+  constexpr State() noexcept = default;
+
   constexpr State(std::ranges::view auto program) : cpu(program) {}
 };
 } // namespace chip_8
