@@ -3,6 +3,7 @@
 #include "state.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <variant>
 
 namespace chip_8 {
@@ -488,7 +489,29 @@ private:
 struct StoreBCDAtAdress {
   constexpr StoreBCDAtAdress(uint8_t reg) noexcept : _register(reg) {}
 
-  void operator()(State &) const noexcept {}
+  void operator()(State &state) const {
+    auto value = state.cpu.registers[_register];
+    auto bcda = _bcda(value);
+
+    std::ranges::copy_n(bcda.rbegin(), _DIGITS_SIZE,
+                        state.cpu.memory.begin() + state.cpu.index);
+  }
+
+private:
+  size_t static constexpr _DIGITS_SIZE = 3;
+
+  [[nodiscard]]
+  std::array<uint8_t, _DIGITS_SIZE> static constexpr _bcda(
+      uint8_t value) noexcept {
+    std::array<uint8_t, _DIGITS_SIZE> result;
+
+    for (size_t i = 0; i < _DIGITS_SIZE; i++) {
+      result[i] = value % 10;
+      value = std::floor(value / 10);
+    }
+
+    return result;
+  }
 
 private:
   uint8_t _register;
