@@ -9,6 +9,7 @@ std::string_view constexpr APP_TITLE = "Chip 8 Emulator";
 std::string_view constexpr APP_ID = "org.nesfvillar.chip_8";
 size_t constexpr APP_WIDTH = 800;
 size_t constexpr APP_HEIGHT = 600;
+size_t constexpr INSTRUCTIONS_PER_FRAME = 10;
 
 void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
              gpointer data) {
@@ -35,7 +36,7 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
   auto &e = *static_cast<Emulator *>(data);
 
   bool should_draw = false;
-  for (auto i = 0; i < 11; i++) {
+  for (size_t i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
     should_draw |= e.step();
   }
 
