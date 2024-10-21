@@ -46,7 +46,10 @@ private:
       return false;
     }
 
-    return _buffer[y][x] ^= pixel;
+    auto collision = pixel && _buffer[y][x];
+    _buffer[y][x] ^= pixel;
+
+    return collision;
   }
 
 public:
