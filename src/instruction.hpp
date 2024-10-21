@@ -213,7 +213,7 @@ struct AddRegisterRegister {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = x_value + y_value;
-    state.cpu.set_flag(0xFFFF - x_value <= y_value);
+    state.cpu.set_flag(UINT8_MAX - x_value < y_value);
   }
 
 private:
@@ -232,7 +232,7 @@ struct SubtractRegisterRegister {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = x_value - y_value;
-    state.cpu.set_flag(x_value > y_value);
+    state.cpu.set_flag(x_value >= y_value);
   }
 
 private:
@@ -266,7 +266,7 @@ struct ReverseSubtractRegisterRegister {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = y_value - x_value;
-    state.cpu.set_flag(y_value > x_value);
+    state.cpu.set_flag(y_value >= x_value);
   }
 
 private:
