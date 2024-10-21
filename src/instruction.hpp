@@ -334,17 +334,16 @@ private:
 
 // CXNN
 struct Random {
-  constexpr Random(uint8_t reg, uint8_t mask, uint8_t random_value) noexcept
-      : _register(reg), _mask(mask), _random_value(random_value) {}
+  constexpr Random(uint8_t reg, uint8_t mask) noexcept
+      : _register(reg), _mask(mask) {}
 
   void operator()(State &state) const noexcept {
-    state.cpu.registers[_register] = _random_value & _mask;
+    state.cpu.registers[_register] = state.random_value() & _mask;
   }
 
 private:
   uint8_t _register;
   uint8_t _mask;
-  uint8_t _random_value;
 };
 
 // DXYN

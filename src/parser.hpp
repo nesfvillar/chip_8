@@ -70,7 +70,7 @@ std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
   case 0xB:
     return JumpPlus{opcode.nnn()};
   case 0xC:
-    return Random{opcode.x(), 0xFF, opcode.nn()};
+    return Random{opcode.x(), 0xFF};
   case 0xD:
     return Draw{opcode.x(), opcode.y(), opcode.n()};
   case 0xE:
