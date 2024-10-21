@@ -1,7 +1,7 @@
 project(
   'chip_8', 'cpp',
   version : '1.0.0',
-  license: 'Apache-2.0',
+  license : 'Apache-2.0',
   default_options : ['cpp_std=c++23', 'warning_level=3'],
 )
 
@@ -17,5 +17,5 @@ dependencies = [
 executable(
   'chip_8',
   src,
-  dependencies: dependencies,
+  dependencies : dependencies,
 )
