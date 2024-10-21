@@ -419,9 +419,11 @@ struct GetKeyBlocking {
   constexpr GetKeyBlocking(uint8_t reg) noexcept : _register(reg) {}
 
   void operator()(State &state) const noexcept {
+    auto value = state.cpu.registers[_register];
+
     for (uint8_t n = 0; n < Keyboard::SIZE; n++) {
       if (state.keyboard[n]) {
-        state.cpu.registers[_register] = n;
+        state.cpu.registers[value] = n;
         return;
       }
     }
