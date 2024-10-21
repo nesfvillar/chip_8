@@ -23,6 +23,10 @@ public:
     _state = State{program};
   }
 
+  void constexpr decrease_timers() noexcept {
+    return _state.cpu.decrease_timers();
+  }
+
   bool step();
 
 private:

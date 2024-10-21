@@ -30,6 +30,15 @@ public:
     program_counter += 2 * amount;
   }
 
+  void constexpr decrease_timers() noexcept {
+    if (timers[Timer::DELAY] > 0) {
+      timers[Timer::DELAY]--;
+    }
+    if (timers[Timer::SOUND] > 0) {
+      timers[Timer::DELAY]--;
+    }
+  }
+
   void constexpr set_flag(bool flag) noexcept {
     registers[_REGISTER_FLAG] = flag;
   }
