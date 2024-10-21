@@ -26,7 +26,7 @@ public:
     return fetch_byte(location) << 8 | fetch_byte(location + 1);
   }
 
-  void step_program_counter(uint16_t amount = 1) noexcept {
+  void step_program_counter(size_t amount = 1) noexcept {
     program_counter += 2 * amount;
   }
 
