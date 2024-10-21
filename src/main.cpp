@@ -35,8 +35,6 @@ void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
 gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
   auto &emulator = *static_cast<Emulator *>(data);
 
-  emulator.decrease_timers();
-
   bool should_draw = false;
   for (size_t i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
     should_draw |= emulator.step();
@@ -44,6 +42,10 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
 
   if (should_draw) {
     gtk_widget_queue_draw(widget);
+  }
+
+  emulator.decrease_timers();
+  if (emulator.state().cpu.timers[Timer::SOUND]) {
   }
 
   return G_SOURCE_CONTINUE;
@@ -159,20 +161,47 @@ void key_released_cb(GtkEventController *controller, guint keyval,
 
 void activate_cb(GtkApplication *app, Emulator *emulator) {
   auto window = adw_application_window_new(app);
-  auto toolbar = adw_toolbar_view_new();
-  auto header = adw_header_bar_new();
-  auto title = adw_window_title_new(APP_TITLE.data(), nullptr);
-  auto key_controller = gtk_event_controller_key_new();
-  auto drawing_area = gtk_drawing_area_new();
 
+  auto drawing_area = gtk_drawing_area_new();
+  gtk_drawing_area_set_draw_func(
+      GTK_DRAWING_AREA(drawing_area), draw_cb,
+      const_cast<Screen *>(&emulator->state().screen), nullptr);
+  gtk_widget_add_tick_callback(drawing_area, tick_cb, emulator, nullptr);
+  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
+  gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(drawing_area),
+                                      APP_HEIGHT);
+  gtk_widget_set_focusable(GTK_WIDGET(drawing_area), TRUE);
+
+  auto emulator_navigation_page =
+      adw_navigation_page_new(drawing_area, "Emulator");
+
+  auto settings = adw_header_bar_new();
+  auto side_navigation_page = adw_navigation_page_new(settings, "Settings");
+
+  auto split_view = adw_navigation_split_view_new();
+  adw_navigation_split_view_set_content(
+      ADW_NAVIGATION_SPLIT_VIEW(split_view),
+      ADW_NAVIGATION_PAGE(emulator_navigation_page));
+  adw_navigation_split_view_set_sidebar(
+      ADW_NAVIGATION_SPLIT_VIEW(split_view),
+      ADW_NAVIGATION_PAGE(side_navigation_page));
+  adw_navigation_split_view_set_show_content(
+      ADW_NAVIGATION_SPLIT_VIEW(split_view), TRUE);
+
+  // adw_navigation_split_view_set_collapsed(ADW_NAVIGATION_SPLIT_VIEW(split_view),
+  //                                         TRUE);
+
+  auto toolbar = adw_toolbar_view_new();
+  adw_toolbar_view_set_content(ADW_TOOLBAR_VIEW(toolbar), split_view);
   adw_application_window_set_content(ADW_APPLICATION_WINDOW(window), toolbar);
 
+  auto header = adw_header_bar_new();
   adw_toolbar_view_add_top_bar(ADW_TOOLBAR_VIEW(toolbar), header);
 
-  adw_toolbar_view_set_content(ADW_TOOLBAR_VIEW(toolbar), drawing_area);
-
+  auto title = adw_window_title_new(APP_TITLE.data(), nullptr);
   adw_header_bar_set_title_widget(ADW_HEADER_BAR(header), title);
 
+  auto key_controller = gtk_event_controller_key_new();
   g_signal_connect_data(GTK_EVENT_CONTROLLER_KEY(key_controller), "key-pressed",
                         G_CALLBACK(key_pressed_cb),
                         const_cast<Keyboard *>(&emulator->state().keyboard),
@@ -181,17 +210,6 @@ void activate_cb(GtkApplication *app, Emulator *emulator) {
                         G_CALLBACK(key_released_cb),
                         const_cast<Keyboard *>(&emulator->state().keyboard),
                         nullptr, G_CONNECT_DEFAULT);
-
-  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(drawing_area), APP_WIDTH);
-  gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(drawing_area),
-                                      APP_HEIGHT);
-  gtk_drawing_area_set_draw_func(
-      GTK_DRAWING_AREA(drawing_area), draw_cb,
-      const_cast<Screen *>(&emulator->state().screen), nullptr);
-
-  gtk_widget_add_tick_callback(drawing_area, tick_cb, emulator, nullptr);
-
-  gtk_widget_set_focusable(GTK_WIDGET(drawing_area), TRUE);
   gtk_widget_add_controller(GTK_WIDGET(drawing_area),
                             GTK_EVENT_CONTROLLER(key_controller));
 
