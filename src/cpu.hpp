@@ -26,11 +26,13 @@ public:
     return fetch_byte(location) << 8 | fetch_byte(location + 1);
   }
 
-  void step_program_counter(size_t amount = 1) noexcept {
+  void constexpr step_program_counter(size_t amount = 1) noexcept {
     program_counter += 2 * amount;
   }
 
-  void set_flag(bool flag) noexcept { registers[_REGISTER_FLAG] = flag; }
+  void constexpr set_flag(bool flag) noexcept {
+    registers[_REGISTER_FLAG] = flag;
+  }
 
 private:
   size_t static constexpr _MEMORY_SIZE = 0x1000;
