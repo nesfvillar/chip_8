@@ -33,11 +33,11 @@ void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
 }
 
 gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
-  auto &e = *static_cast<Emulator *>(data);
+  auto &emulator = *static_cast<Emulator *>(data);
 
   bool should_draw = false;
   for (size_t i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-    should_draw |= e.step();
+    should_draw |= emulator.step();
   }
 
   if (should_draw) {
