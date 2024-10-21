@@ -48,7 +48,7 @@ gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
 
 void key_pressed_cb(GtkEventController *controller, guint keyval, guint keycode,
                     GdkModifierType state, Keyboard *keyboard) {
-  switch (keyval) {
+  switch (gdk_keyval_to_lower(keyval)) {
   case GDK_KEY_1:
     (*keyboard)[0x1] = true;
     break;
@@ -102,7 +102,7 @@ void key_pressed_cb(GtkEventController *controller, guint keyval, guint keycode,
 
 void key_released_cb(GtkEventController *controller, guint keyval,
                      guint keycode, GdkModifierType state, Keyboard *keyboard) {
-  switch (keyval) {
+  switch (gdk_keyval_to_lower(keyval)) {
   case GDK_KEY_1:
     (*keyboard)[0x1] = false;
     break;
