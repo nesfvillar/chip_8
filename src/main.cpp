@@ -179,8 +179,6 @@ void activate_cb(GtkApplication *app, Emulator *emulator) {
                         G_CALLBACK(key_released_cb),
                         const_cast<Keyboard *>(&emulator->state().keyboard),
                         nullptr, G_CONNECT_DEFAULT);
-
-  gtk_widget_set_focusable(GTK_WIDGET(drawing_area), TRUE);
   gtk_widget_add_controller(GTK_WIDGET(drawing_area), key_controller);
 
   gtk_window_present(window);
