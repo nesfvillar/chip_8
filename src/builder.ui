@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="org.nesfvillar.chip-8">
+<object class="AdwApplicationWindow" id="window">
+  <property name="content">
+    <object class="AdwToolbarView">
+      <child type="top">
+        <object class="AdwHeaderBar">
+            <property name="title-widget">
+              <object class="AdwWindowTitle">
+                <property name="title" translatable="yes">Chip 8 Emulator</property>
+              </object>
+            </property>
+        </object>
+      </child>
+
+      <property name="content">
+          <object class="GtkDrawingArea" id="drawing_area">
+            <property name="content-width">800</property>
+            <property name="content-height">600</property>
+          </object>
+      </property>
+    </object>
+  </property>
+</object>
+</interface>
