@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="org.nesfvillar.chip-8">
 <object class="AdwApplicationWindow" id="window">
+  <property name="default-width">800</property>
+  <property name="default-height">600</property>
+
   <property name="content">
     <object class="AdwToolbarView">
       <child type="top">
@@ -14,9 +17,28 @@
       </child>
 
       <property name="content">
-          <object class="GtkDrawingArea" id="drawing_area">
-            <property name="content-width">800</property>
-            <property name="content-height">600</property>
+          <object class="AdwNavigationSplitView">
+            <property name="collapsed">True</property>
+            <property name="show-content">True</property>
+
+            <property name="sidebar">
+              <object class="AdwNavigationPage">
+                <property name="title" translatable="yes">Sidebar</property>
+              </object>
+            </property>
+
+            <property name="content">
+              <object class="AdwNavigationPage">
+                <property name="title" translatable="yes">Main Screen</property>
+
+                <child>
+                  <object class="GtkDrawingArea" id="drawing_area">
+                    <property name="content-width">600</property>
+                    <property name="content-height">400</property>
+                  </object>
+                </child>
+              </object>
+            </property>
           </object>
       </property>
     </object>
