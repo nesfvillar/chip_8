@@ -23,7 +23,7 @@ public:
         auto y_pixel = y + i;
         auto x_pixel = x + 7 - j;
 
-        auto pixel = (sprites[i] & 1 << j) > 0;
+        auto pixel = sprites[i] & 1 << j;
 
         collision |= _draw_pixel(pixel, x_pixel, y_pixel);
       }
