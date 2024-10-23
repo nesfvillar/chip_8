@@ -26,7 +26,6 @@
 
         <property name="content">
           <object class="GtkDrawingArea" id="drawing_area">
-            <property name="focusable">True</property>
           </object>
         </property>
      </object>
