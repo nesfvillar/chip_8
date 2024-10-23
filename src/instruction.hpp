@@ -3,7 +3,7 @@
 #include "state.hpp"
 
 #include <algorithm>
-#include <cmath>
+#include <ranges>
 #include <variant>
 
 namespace chip_8 {
