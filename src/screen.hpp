@@ -1,6 +1,7 @@
 #pragma once
 
-#include <array>
+#include <bitset>
+#include <cassert>
 #include <cstdint>
 #include <span>
 
@@ -9,16 +10,7 @@ using Sprite = uint8_t;
 
 class Screen {
 public:
-  [[nodiscard]]
-  auto const &buffer() const noexcept {
-    return _buffer;
-  }
-
-  void constexpr clear_buffer() noexcept {
-    for (auto &&row : _buffer)
-      for (auto &&pixel : row)
-        pixel = false;
-  }
+  void constexpr clear_buffer() noexcept { _buffer.reset(); }
 
   bool constexpr draw_sprites(std::span<const Sprite> sprites, size_t x,
                               size_t y) noexcept {
@@ -40,14 +32,21 @@ public:
     return collision;
   }
 
+  [[nodiscard]]
+  decltype(auto) operator[](size_t x, size_t y) noexcept {
+    assert(x < WIDTH && y < HEIGHT);
+
+    return _buffer[y * WIDTH + x];
+  }
+
 private:
   bool constexpr _draw_pixel(bool pixel, size_t x, size_t y) noexcept {
     if (x >= WIDTH || y >= HEIGHT) {
       return false;
     }
 
-    auto collision = pixel && _buffer[y][x];
-    _buffer[y][x] ^= pixel;
+    auto collision = pixel && operator[](x, y);
+    operator[](x, y) = pixel ^ operator[](x, y);
 
     return collision;
   }
@@ -57,6 +56,6 @@ public:
   size_t static constexpr HEIGHT = 32;
 
 private:
-  std::array<std::array<bool, WIDTH>, HEIGHT> _buffer{};
+  std::bitset<WIDTH * HEIGHT> _buffer;
 };
 } // namespace chip_8

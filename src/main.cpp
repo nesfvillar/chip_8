@@ -10,13 +10,13 @@ size_t constexpr INSTRUCTIONS_PER_FRAME = 10;
 
 void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
              gpointer data) {
-  auto const &screen_buffer = static_cast<Screen const *>(data)->buffer();
+  auto screen = *static_cast<Screen const *>(data);
 
-  int pixel_height = height / Screen::HEIGHT;
-  int pixel_width = width / Screen::WIDTH;
-  for (size_t y = 0; y < Screen::HEIGHT; y++) {
-    for (size_t x = 0; x < Screen::WIDTH; x++) {
-      if (screen_buffer[y][x]) {
+  int pixel_height = height / screen.HEIGHT;
+  int pixel_width = width / screen.WIDTH;
+  for (size_t y = 0; y < screen.HEIGHT; y++) {
+    for (size_t x = 0; x < screen.WIDTH; x++) {
+      if (screen[x, y]) {
         cairo_rectangle(cr, x * pixel_width, y * pixel_height, pixel_width,
                         pixel_height);
       }
