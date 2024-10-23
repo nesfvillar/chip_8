@@ -2,28 +2,27 @@
 
 #include <bitset>
 #include <cassert>
-#include <cstdint>
-#include <span>
+#include <ranges>
 
 namespace chip_8 {
-using Sprite = uint8_t;
+using Sprite = std::bitset<8>;
 
 class Screen {
 public:
   void constexpr clear_buffer() noexcept { _buffer.reset(); }
 
-  bool constexpr draw_sprites(std::span<const Sprite> sprites, size_t x,
+  bool constexpr draw_sprites(std::ranges::view auto const sprites, size_t x,
                               size_t y) noexcept {
     x %= WIDTH;
     y %= HEIGHT;
 
     bool collision = false;
-    for (size_t i = 0; i < sprites.size(); i++) {
-      for (auto j = 0; j < 8; j++) {
-        auto y_pixel = y + i;
-        auto x_pixel = x + 7 - j;
+    for (auto [row, sprite] : sprites | std::views::enumerate) {
+      for (auto col = 0; col < 8; col++) {
+        auto y_pixel = y + row;
+        auto x_pixel = x + 7 - col;
 
-        auto pixel = sprites[i] & 1 << j;
+        bool pixel = sprite[col];
 
         collision |= _draw_pixel(pixel, x_pixel, y_pixel);
       }

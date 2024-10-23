@@ -355,10 +355,12 @@ struct Draw {
     auto x_value = state.cpu.registers[_x_register];
     auto y_value = state.cpu.registers[_y_register];
 
-    auto indices = state.cpu.memory | std::views::drop(state.cpu.index) |
-                   std::views::take(_size);
+    auto sprites =
+        state.cpu.memory | std::views::drop(state.cpu.index) |
+        std::views::take(_size) |
+        std::views::transform([](auto sprite) { return Sprite{sprite}; });
 
-    state.cpu.set_flag(state.screen.draw_sprites(indices, x_value, y_value));
+    state.screen.draw_sprites(sprites, x_value, y_value);
   }
 
 private:
