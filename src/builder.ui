@@ -19,6 +19,11 @@
             <child type="end">
               <object class="GtkMenuButton">
                 <property name="icon-name">open-menu-symbolic</property>
+                <property name="popover">
+                  <object class="GtkPopoverMenu">
+                    <property name="menu-model">settings-menu</property>
+                  </object>
+                </property>
               </object>
             </child>
           </object>
@@ -31,4 +36,18 @@
      </object>
     </property>
   </object>
+
+
+  <menu id="settings-menu">
+    <section>
+      <item>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="icon">help-about-symbolic</attribute>
+        <attribute name="action">open_dialog_about</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>
