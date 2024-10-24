@@ -70,7 +70,7 @@ std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
   case 0xB:
     return JumpPlus{opcode.nnn()};
   case 0xC:
-    return Random{opcode.x(), 0xFF};
+    return Random{opcode.x(), opcode.nn()};
   case 0xD:
     return Draw{opcode.x(), opcode.y(), opcode.n()};
   case 0xE:
@@ -84,6 +84,8 @@ std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
     }
   case 0xF:
     switch (opcode.nn()) {
+    case 0x07:
+      return GetDelay{opcode.x()};
     case 0x0A:
       return GetKeyBlocking{opcode.x()};
     case 0x15:

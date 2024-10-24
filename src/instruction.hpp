@@ -299,7 +299,7 @@ struct SkipIfNotEqRegister {
     auto y_value = state.cpu.registers[_y_register];
 
     if (x_value != y_value) {
-      state.cpu.program_counter += 2;
+      state.cpu.step_program_counter();
     }
   }
 
