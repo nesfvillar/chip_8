@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <optional>
 #include <vector>
 
 namespace chip_8 {
@@ -17,13 +18,23 @@ public:
   }
 
   [[nodiscard]]
-  uint8_t fetch_byte(uint16_t location) const {
-    return memory.at(location);
+  std::optional<uint8_t> constexpr fetch_byte(
+      uint16_t location) const noexcept {
+    if (location < _MEMORY_SIZE) {
+      return memory[location];
+    } else {
+      return std::nullopt;
+    }
   }
 
   [[nodiscard]]
-  uint16_t fetch_word(uint16_t location) const {
-    return fetch_byte(location) << 8 | fetch_byte(location + 1);
+  std::optional<uint16_t> constexpr fetch_word(
+      uint16_t location) const noexcept {
+    if (location < _MEMORY_SIZE - 1) {
+      return *fetch_byte(location) << 8 | *fetch_byte(location + 1);
+    } else {
+      return std::nullopt;
+    }
   }
 
   void constexpr step_program_counter(size_t amount = 1) noexcept {

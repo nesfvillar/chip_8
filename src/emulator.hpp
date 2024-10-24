@@ -1,6 +1,7 @@
 #pragma once
 
 #include "opcode.hpp"
+#include "parser.hpp"
 #include "state.hpp"
 
 #include <filesystem>
@@ -31,8 +32,17 @@ public:
 
 private:
   [[nodiscard]]
-  Opcode constexpr fetch_opcode(uint16_t location) const {
-    return Opcode{_state.cpu.fetch_word(location)};
+  std::optional<Opcode> constexpr fetch_opcode(
+      uint16_t location) const noexcept {
+    auto word = _state.cpu.fetch_word(location);
+    return word.transform([](auto word) { return Opcode{word}; });
+  }
+
+  [[nodiscard]]
+  std::optional<Instruction> constexpr fetch_instruction(
+      uint16_t location) const noexcept {
+    auto opcode = fetch_opcode(location);
+    return opcode.and_then(decode);
   }
 
 private:
