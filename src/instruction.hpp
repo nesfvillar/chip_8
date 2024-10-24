@@ -360,7 +360,7 @@ struct Draw {
         std::views::take(_size) |
         std::views::transform([](auto sprite) { return Sprite{sprite}; });
 
-    state.screen.draw_sprites(sprites, x_value, y_value);
+    state.cpu.set_flag(state.screen.draw_sprites(sprites, x_value, y_value));
   }
 
 private:
