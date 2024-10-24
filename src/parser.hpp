@@ -52,11 +52,11 @@ std::optional<Instruction> constexpr decode(Opcode const &opcode) noexcept {
     case 0x5:
       return SubtractRegisterRegister{opcode.x(), opcode.y()};
     case 0x6:
-      return ShiftRight{opcode.x()};
+      return ShiftRight{opcode.x(), opcode.y()};
     case 0x7:
       return ReverseSubtractRegisterRegister{opcode.x(), opcode.y()};
     case 0xE:
-      return ShiftLeft{opcode.x()};
+      return ShiftLeft{opcode.x(), opcode.y()};
     default:
       return std::nullopt;
     }

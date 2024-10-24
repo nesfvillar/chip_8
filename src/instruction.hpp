@@ -162,6 +162,7 @@ struct Or {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = x_value | y_value;
+    state.cpu.set_flag(false);
   }
 
 private:
@@ -179,6 +180,7 @@ struct And {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = x_value & y_value;
+    state.cpu.set_flag(false);
   }
 
 private:
@@ -196,6 +198,7 @@ struct Xor {
     auto y_value = state.cpu.registers[_y_register];
 
     state.cpu.registers[_x_register] = x_value ^ y_value;
+    state.cpu.set_flag(false);
   }
 
 private:
@@ -242,17 +245,20 @@ private:
 
 // 8XY6
 struct ShiftRight {
-  constexpr ShiftRight(uint8_t reg) noexcept : _register(reg) {}
+  constexpr ShiftRight(uint8_t x_register, uint8_t y_register) noexcept
+      : _x_register(x_register), _y_register(y_register) {}
 
   void operator()(State &state) const noexcept {
-    auto x_value = state.cpu.registers[_register];
+    state.cpu.registers[_x_register] = state.cpu.registers[_y_register];
 
-    state.cpu.registers[_register] = x_value >> 1;
-    state.cpu.set_flag(x_value & 1);
+    auto x_value = state.cpu.registers[_x_register];
+    state.cpu.registers[_x_register] >>= 1;
+    state.cpu.set_flag((x_value & 1) > 0);
   }
 
 private:
-  uint8_t _register;
+  uint8_t _x_register;
+  uint8_t _y_register;
 };
 
 // 8XY7
@@ -276,17 +282,20 @@ private:
 
 // 8XYE
 struct ShiftLeft {
-  constexpr ShiftLeft(uint8_t reg) noexcept : _register(reg) {}
+  constexpr ShiftLeft(uint8_t x_register, uint8_t y_register) noexcept
+      : _x_register(x_register), _y_register(y_register) {}
 
   void operator()(State &state) const noexcept {
-    auto value = state.cpu.registers[_register];
+    state.cpu.registers[_x_register] = state.cpu.registers[_y_register];
 
-    state.cpu.registers[_register] = value << 1;
+    auto value = state.cpu.registers[_x_register];
+    state.cpu.registers[_x_register] <<= 1;
     state.cpu.set_flag((value & (1 << 7)) > 0);
   }
 
 private:
-  uint8_t _register;
+  uint8_t _x_register;
+  uint8_t _y_register;
 };
 
 // 9XY0
@@ -528,6 +537,7 @@ struct DumpRegisters {
     auto location = state.cpu.memory.begin() + state.cpu.index;
 
     std::ranges::copy_n(state.cpu.registers.begin(), _register + 1, location);
+    state.cpu.index += _register + 1;
   }
 
 private:
@@ -542,6 +552,7 @@ struct LoadRegisters {
     auto location = state.cpu.memory.begin() + state.cpu.index;
 
     std::ranges::copy_n(location, _register + 1, state.cpu.registers.begin());
+    state.cpu.index += _register + 1;
   }
 
 private:
