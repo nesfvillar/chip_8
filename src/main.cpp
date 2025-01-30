@@ -14,56 +14,56 @@ size_t constexpr INSTRUCTIONS_PER_FRAME = 10;
 
 bool on_key_pressed(guint keyval, guint, Gdk::ModifierType,
                     Emulator *emulator) {
-  auto keyboard = const_cast<Keyboard &>(emulator->state().keyboard);
+  auto keyboard = const_cast<Keyboard *>(&emulator->state().keyboard);
 
   switch (gdk_keyval_to_lower(keyval)) {
   case GDK_KEY_1:
-    keyboard[0x1] = true;
+    (*keyboard)[0x1] = true;
     break;
   case GDK_KEY_2:
-    keyboard[0x2] = true;
+    (*keyboard)[0x2] = true;
     break;
   case GDK_KEY_3:
-    keyboard[0x3] = true;
+    (*keyboard)[0x3] = true;
     break;
   case GDK_KEY_4:
-    keyboard[0xC] = true;
+    (*keyboard)[0xC] = true;
     break;
   case GDK_KEY_q:
-    keyboard[0x4] = true;
+    (*keyboard)[0x4] = true;
     break;
   case GDK_KEY_w:
-    keyboard[0x5] = true;
+    (*keyboard)[0x5] = true;
     break;
   case GDK_KEY_e:
-    keyboard[0x6] = true;
+    (*keyboard)[0x6] = true;
     break;
   case GDK_KEY_r:
-    keyboard[0xD] = true;
+    (*keyboard)[0xD] = true;
     break;
   case GDK_KEY_a:
-    keyboard[0x7] = true;
+    (*keyboard)[0x7] = true;
     break;
   case GDK_KEY_s:
-    keyboard[0x8] = true;
+    (*keyboard)[0x8] = true;
     break;
   case GDK_KEY_d:
-    keyboard[0x9] = true;
+    (*keyboard)[0x9] = true;
     break;
   case GDK_KEY_f:
-    keyboard[0xE] = true;
+    (*keyboard)[0xE] = true;
     break;
   case GDK_KEY_z:
-    keyboard[0xA] = true;
+    (*keyboard)[0xA] = true;
     break;
   case GDK_KEY_x:
-    keyboard[0x0] = true;
+    (*keyboard)[0x0] = true;
     break;
   case GDK_KEY_c:
-    keyboard[0xB] = true;
+    (*keyboard)[0xB] = true;
     break;
   case GDK_KEY_v:
-    keyboard[0xF] = true;
+    (*keyboard)[0xF] = true;
     break;
   }
 
@@ -72,60 +72,59 @@ bool on_key_pressed(guint keyval, guint, Gdk::ModifierType,
 
 void on_key_released(guint keyval, guint, Gdk::ModifierType,
                      Emulator *emulator) {
-  auto keyboard = const_cast<Keyboard &>(emulator->state().keyboard);
+  auto keyboard = const_cast<Keyboard *>(&emulator->state().keyboard);
 
   switch (gdk_keyval_to_lower(keyval)) {
   case GDK_KEY_1:
-    keyboard[0x1] = false;
+    (*keyboard)[0x1] = false;
     break;
   case GDK_KEY_2:
-    keyboard[0x2] = false;
+    (*keyboard)[0x2] = false;
     break;
   case GDK_KEY_3:
-    keyboard[0x3] = false;
+    (*keyboard)[0x3] = false;
     break;
   case GDK_KEY_4:
-    keyboard[0xC] = false;
+    (*keyboard)[0xC] = false;
     break;
   case GDK_KEY_q:
-    keyboard[0x4] = false;
+    (*keyboard)[0x4] = false;
     break;
   case GDK_KEY_w:
-    keyboard[0x5] = false;
+    (*keyboard)[0x5] = false;
     break;
   case GDK_KEY_e:
-    keyboard[0x6] = false;
+    (*keyboard)[0x6] = false;
     break;
   case GDK_KEY_r:
-    keyboard[0xD] = false;
+    (*keyboard)[0xD] = false;
     break;
   case GDK_KEY_a:
-    keyboard[0x7] = false;
+    (*keyboard)[0x7] = false;
     break;
   case GDK_KEY_s:
-    keyboard[0x8] = false;
+    (*keyboard)[0x8] = false;
     break;
   case GDK_KEY_d:
-    keyboard[0x9] = false;
+    (*keyboard)[0x9] = false;
     break;
   case GDK_KEY_f:
-    keyboard[0xE] = false;
+    (*keyboard)[0xE] = false;
     break;
   case GDK_KEY_z:
-    keyboard[0xA] = false;
+    (*keyboard)[0xA] = false;
     break;
   case GDK_KEY_x:
-    keyboard[0x0] = false;
+    (*keyboard)[0x0] = false;
     break;
   case GDK_KEY_c:
-    keyboard[0xB] = false;
+    (*keyboard)[0xB] = false;
     break;
   case GDK_KEY_v:
-    keyboard[0xF] = false;
+    (*keyboard)[0xF] = false;
     break;
   }
 }
-
 void on_draw(Cairo::RefPtr<Cairo::Context> const &cr, int width, int height,
              Gtk::Widget const *widget, Emulator const *emulator) {
   auto screen = emulator->state().screen;
