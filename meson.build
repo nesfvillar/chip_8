@@ -1,21 +1,24 @@
 project(
-  'chip_8', 'cpp',
+  'chip_8',
+  'cpp',
   version : '1.0.0',
-  license : 'Apache-2.0',
+  license : 'BSD-2-Clause',
   default_options : ['cpp_std=c++23', 'warning_level=3'],
 )
 
-src = [
-  'main.cpp',
-  'emulator.cpp',
+src_files = [
+  'src/main.cpp',
+  'src/emulator.cpp',
 ]
 
 dependencies = [
   dependency('libadwaita-1'),
+  dependency('gtkmm-4.0'),
 ]
 
 executable(
   'chip_8',
-  src,
+  src_files,
   dependencies : dependencies,
 )
+

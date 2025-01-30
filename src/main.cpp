@@ -1,195 +1,204 @@
 #include "emulator.hpp"
 
-#include <adwaita.h>
 #include <string_view>
+
+#include <adwaita.h>
+#include <gtkmm.h>
 
 using namespace chip_8;
 
 std::string_view constexpr APP_ID = "org.nesfvillar.chip_8";
+std::string_view constexpr UI_PATH = "../src/builder.ui";
+std::string_view constexpr PROGRAM_PATH = "../br8kout.ch8";
 size_t constexpr INSTRUCTIONS_PER_FRAME = 10;
 
-void draw_cb(GtkDrawingArea *area, cairo_t *cr, int width, int height,
-             gpointer data) {
-  auto screen = *static_cast<Screen const *>(data);
+bool on_key_pressed(guint keyval, guint, Gdk::ModifierType,
+                    Emulator *emulator) {
+  auto keyboard = const_cast<Keyboard &>(emulator->state().keyboard);
+
+  switch (gdk_keyval_to_lower(keyval)) {
+  case GDK_KEY_1:
+    keyboard[0x1] = true;
+    break;
+  case GDK_KEY_2:
+    keyboard[0x2] = true;
+    break;
+  case GDK_KEY_3:
+    keyboard[0x3] = true;
+    break;
+  case GDK_KEY_4:
+    keyboard[0xC] = true;
+    break;
+  case GDK_KEY_q:
+    keyboard[0x4] = true;
+    break;
+  case GDK_KEY_w:
+    keyboard[0x5] = true;
+    break;
+  case GDK_KEY_e:
+    keyboard[0x6] = true;
+    break;
+  case GDK_KEY_r:
+    keyboard[0xD] = true;
+    break;
+  case GDK_KEY_a:
+    keyboard[0x7] = true;
+    break;
+  case GDK_KEY_s:
+    keyboard[0x8] = true;
+    break;
+  case GDK_KEY_d:
+    keyboard[0x9] = true;
+    break;
+  case GDK_KEY_f:
+    keyboard[0xE] = true;
+    break;
+  case GDK_KEY_z:
+    keyboard[0xA] = true;
+    break;
+  case GDK_KEY_x:
+    keyboard[0x0] = true;
+    break;
+  case GDK_KEY_c:
+    keyboard[0xB] = true;
+    break;
+  case GDK_KEY_v:
+    keyboard[0xF] = true;
+    break;
+  }
+
+  return true;
+}
+
+void on_key_released(guint keyval, guint, Gdk::ModifierType,
+                     Emulator *emulator) {
+  auto keyboard = const_cast<Keyboard &>(emulator->state().keyboard);
+
+  switch (gdk_keyval_to_lower(keyval)) {
+  case GDK_KEY_1:
+    keyboard[0x1] = false;
+    break;
+  case GDK_KEY_2:
+    keyboard[0x2] = false;
+    break;
+  case GDK_KEY_3:
+    keyboard[0x3] = false;
+    break;
+  case GDK_KEY_4:
+    keyboard[0xC] = false;
+    break;
+  case GDK_KEY_q:
+    keyboard[0x4] = false;
+    break;
+  case GDK_KEY_w:
+    keyboard[0x5] = false;
+    break;
+  case GDK_KEY_e:
+    keyboard[0x6] = false;
+    break;
+  case GDK_KEY_r:
+    keyboard[0xD] = false;
+    break;
+  case GDK_KEY_a:
+    keyboard[0x7] = false;
+    break;
+  case GDK_KEY_s:
+    keyboard[0x8] = false;
+    break;
+  case GDK_KEY_d:
+    keyboard[0x9] = false;
+    break;
+  case GDK_KEY_f:
+    keyboard[0xE] = false;
+    break;
+  case GDK_KEY_z:
+    keyboard[0xA] = false;
+    break;
+  case GDK_KEY_x:
+    keyboard[0x0] = false;
+    break;
+  case GDK_KEY_c:
+    keyboard[0xB] = false;
+    break;
+  case GDK_KEY_v:
+    keyboard[0xF] = false;
+    break;
+  }
+}
+
+void on_draw(Cairo::RefPtr<Cairo::Context> const &cr, int width, int height,
+             Gtk::Widget const *widget, Emulator const *emulator) {
+  auto screen = emulator->state().screen;
 
   int pixel_height = height / screen.HEIGHT;
   int pixel_width = width / screen.WIDTH;
+
   for (size_t y = 0; y < screen.HEIGHT; y++) {
     for (size_t x = 0; x < screen.WIDTH; x++) {
+
       if (screen[x, y]) {
-        cairo_rectangle(cr, x * pixel_width, y * pixel_height, pixel_width,
-                        pixel_height);
+        cr->rectangle(x * pixel_width, y * pixel_height, pixel_width,
+                      pixel_height);
       }
     }
   }
-  GdkRGBA color;
-  gtk_widget_get_color(GTK_WIDGET(area), &color);
-  gdk_cairo_set_source_rgba(cr, &color);
 
-  cairo_fill(cr);
+  auto color = widget->get_color();
+  cr->set_source_rgba(color.get_red(), color.get_green(), color.get_blue(),
+                      color.get_alpha());
+
+  cr->fill();
 }
 
-gboolean tick_cb(GtkWidget *widget, GdkFrameClock *frame_clock, gpointer data) {
-  auto &emulator = *static_cast<Emulator *>(data);
-
+bool on_tick(Glib::RefPtr<Gdk::FrameClock> const &, Gtk::Widget *widget,
+             Emulator *emulator) {
   bool should_draw = false;
   for (size_t i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-    should_draw |= emulator.step();
+    should_draw |= emulator->step();
   }
 
   if (should_draw) {
-    gtk_widget_queue_draw(widget);
+    widget->queue_draw();
   }
 
-  emulator.decrease_timers();
-  if (emulator.state().cpu.timers[Timer::SOUND]) {
+  emulator->decrease_timers();
+  if (emulator->state().cpu.timers[Timer::SOUND]) {
   }
 
   return G_SOURCE_CONTINUE;
 }
 
-void key_pressed_cb(GtkEventController *controller, guint keyval, guint keycode,
-                    GdkModifierType state, Keyboard *keyboard) {
-  switch (gdk_keyval_to_lower(keyval)) {
-  case GDK_KEY_1:
-    (*keyboard)[0x1] = true;
-    break;
-  case GDK_KEY_2:
-    (*keyboard)[0x2] = true;
-    break;
-  case GDK_KEY_3:
-    (*keyboard)[0x3] = true;
-    break;
-  case GDK_KEY_4:
-    (*keyboard)[0xC] = true;
-    break;
-  case GDK_KEY_q:
-    (*keyboard)[0x4] = true;
-    break;
-  case GDK_KEY_w:
-    (*keyboard)[0x5] = true;
-    break;
-  case GDK_KEY_e:
-    (*keyboard)[0x6] = true;
-    break;
-  case GDK_KEY_r:
-    (*keyboard)[0xD] = true;
-    break;
-  case GDK_KEY_a:
-    (*keyboard)[0x7] = true;
-    break;
-  case GDK_KEY_s:
-    (*keyboard)[0x8] = true;
-    break;
-  case GDK_KEY_d:
-    (*keyboard)[0x9] = true;
-    break;
-  case GDK_KEY_f:
-    (*keyboard)[0xE] = true;
-    break;
-  case GDK_KEY_z:
-    (*keyboard)[0xA] = true;
-    break;
-  case GDK_KEY_x:
-    (*keyboard)[0x0] = true;
-    break;
-  case GDK_KEY_c:
-    (*keyboard)[0xB] = true;
-    break;
-  case GDK_KEY_v:
-    (*keyboard)[0xF] = true;
-    break;
-  }
-}
+void on_app_activate(Glib::RefPtr<Gtk::Application> app, Emulator *emulator) {
 
-void key_released_cb(GtkEventController *controller, guint keyval,
-                     guint keycode, GdkModifierType state, Keyboard *keyboard) {
-  switch (gdk_keyval_to_lower(keyval)) {
-  case GDK_KEY_1:
-    (*keyboard)[0x1] = false;
-    break;
-  case GDK_KEY_2:
-    (*keyboard)[0x2] = false;
-    break;
-  case GDK_KEY_3:
-    (*keyboard)[0x3] = false;
-    break;
-  case GDK_KEY_4:
-    (*keyboard)[0xC] = false;
-    break;
-  case GDK_KEY_q:
-    (*keyboard)[0x4] = false;
-    break;
-  case GDK_KEY_w:
-    (*keyboard)[0x5] = false;
-    break;
-  case GDK_KEY_e:
-    (*keyboard)[0x6] = false;
-    break;
-  case GDK_KEY_r:
-    (*keyboard)[0xD] = false;
-    break;
-  case GDK_KEY_a:
-    (*keyboard)[0x7] = false;
-    break;
-  case GDK_KEY_s:
-    (*keyboard)[0x8] = false;
-    break;
-  case GDK_KEY_d:
-    (*keyboard)[0x9] = false;
-    break;
-  case GDK_KEY_f:
-    (*keyboard)[0xE] = false;
-    break;
-  case GDK_KEY_z:
-    (*keyboard)[0xA] = false;
-    break;
-  case GDK_KEY_x:
-    (*keyboard)[0x0] = false;
-    break;
-  case GDK_KEY_c:
-    (*keyboard)[0xB] = false;
-    break;
-  case GDK_KEY_v:
-    (*keyboard)[0xF] = false;
-    break;
-  }
-}
+  auto builder = Gtk::Builder::create_from_file(UI_PATH.data());
 
-void activate_cb(GtkApplication *app, Emulator *emulator) {
-  auto builder = gtk_builder_new_from_file(UI_PATH.data());
+  auto window = builder->get_object<Gtk::ApplicationWindow>("window");
+  window->set_application(app);
 
-  auto window = GTK_WINDOW(gtk_builder_get_object(builder, "window"));
-  gtk_window_set_application(window, app);
+  auto drawing_area = builder->get_object<Gtk::DrawingArea>("drawing_area");
+  drawing_area->set_draw_func(
+      sigc::bind(&on_draw, drawing_area.get(), emulator));
+  drawing_area->add_tick_callback(
+      sigc::bind(&on_tick, drawing_area.get(), emulator));
 
-  auto drawing_area =
-      GTK_DRAWING_AREA(gtk_builder_get_object(builder, "drawing_area"));
-  gtk_drawing_area_set_draw_func(
-      drawing_area, draw_cb, const_cast<Screen *>(&emulator->state().screen),
-      nullptr);
-  gtk_widget_add_tick_callback(GTK_WIDGET(drawing_area), tick_cb, emulator,
-                               nullptr);
+  auto key_controller = Gtk::EventControllerKey::create();
+  key_controller->signal_key_pressed().connect(
+      sigc::bind(&on_key_pressed, emulator), true);
+  key_controller->signal_key_released().connect(
+      sigc::bind(&on_key_released, emulator), false);
+  window->add_controller(key_controller);
 
-  auto key_controller = gtk_event_controller_key_new();
-  g_signal_connect_data(key_controller, "key-pressed",
-                        G_CALLBACK(key_pressed_cb),
-                        const_cast<Keyboard *>(&emulator->state().keyboard),
-                        nullptr, G_CONNECT_DEFAULT);
-  g_signal_connect_data(key_controller, "key-released",
-                        G_CALLBACK(key_released_cb),
-                        const_cast<Keyboard *>(&emulator->state().keyboard),
-                        nullptr, G_CONNECT_DEFAULT);
-  gtk_widget_add_controller(GTK_WIDGET(window), key_controller);
-
-  gtk_window_present(window);
+  window->present();
 }
 
 int main(int argc, char *argv[]) {
-  auto app = adw_application_new(APP_ID.data(), G_APPLICATION_DEFAULT_FLAGS);
+  adw_init();
+  auto app = Gtk::Application::create(APP_ID.data());
 
-  Emulator emulator;
+  auto program = read_binary(PROGRAM_PATH.data());
+  Emulator emulator{program | std::views::all};
 
-  g_signal_connect(app, "activate", G_CALLBACK(activate_cb), &emulator);
+  app->signal_activate().connect(sigc::bind(&on_app_activate, app, &emulator));
 
-  return g_application_run(G_APPLICATION(app), argc, argv);
+  return app->run(argc, argv);
 }
