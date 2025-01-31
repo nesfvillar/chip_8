@@ -9,6 +9,7 @@ project(
 src_files = [
   'src/main.cpp',
   'src/emulator.cpp',
+  'src/instruction.cpp'
 ]
 
 dependencies = [

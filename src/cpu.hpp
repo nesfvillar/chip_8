@@ -1,52 +1,49 @@
 #pragma once
 
+#include "screen.hpp"
+
 #include <algorithm>
-#include <array>
 #include <cstdint>
 #include <optional>
+#include <ranges>
+#include <stdexcept>
 #include <vector>
 
 namespace chip_8 {
-enum Timer { DELAY, SOUND };
+
+enum class Timer { DELAY, SOUND };
 
 class Cpu {
 public:
   constexpr Cpu() noexcept = default;
 
-  constexpr Cpu(std::ranges::view auto program) {
-    std::ranges::copy(program, memory.begin() + _PROGRAM_START);
+  constexpr Cpu(std::ranges::range auto &&program) {
+    std::ranges::move(program, memory.begin() + _PROGRAM_START);
   }
 
+  constexpr ~Cpu() noexcept = default;
+
+  template <typename T>
   [[nodiscard]]
-  std::optional<uint8_t> constexpr fetch_byte(
-      uint16_t location) const noexcept {
-    if (location < _MEMORY_SIZE) {
-      return memory[location];
-    } else {
+  std::optional<T> constexpr fetch(size_t location) const noexcept {
+    T result = 0;
+    try {
+      for (size_t i = 0; i < sizeof(T); i++) {
+        result = result << 8 | memory.at(location + i);
+      }
+      return result;
+    } catch (std::out_of_range const &ex) {
       return std::nullopt;
     }
   }
 
-  [[nodiscard]]
-  std::optional<uint16_t> constexpr fetch_word(
-      uint16_t location) const noexcept {
-    if (location < _MEMORY_SIZE - 1) {
-      return *fetch_byte(location) << 8 | *fetch_byte(location + 1);
-    } else {
-      return std::nullopt;
-    }
-  }
-
-  void constexpr step_program_counter(size_t amount = 1) noexcept {
+  void constexpr step_program_counter(ssize_t amount = 1) noexcept {
     program_counter += 2 * amount;
   }
 
   void constexpr decrease_timers() noexcept {
-    if (timers[Timer::DELAY] > 0) {
-      timers[Timer::DELAY]--;
-    }
-    if (timers[Timer::SOUND] > 0) {
-      timers[Timer::DELAY]--;
+    for (auto &&timer : timers) {
+      timer = std::min(0, timer - 1);
     }
   }
 
@@ -63,6 +60,8 @@ private:
 
   size_t static constexpr _TIMERS_SIZE = 0x2;
 
+  size_t static constexpr _KEYBOARD_SIZE = 0x10;
+
 public:
   std::array<uint8_t, _MEMORY_SIZE> memory{};
   uint16_t program_counter = _PROGRAM_START;
@@ -70,8 +69,11 @@ public:
 
   std::array<uint8_t, _REGISTERS_SIZE> registers{};
 
-  std::vector<uint16_t> stack{};
+  std::vector<uint16_t> stack;
 
   std::array<uint8_t, _TIMERS_SIZE> timers{};
+
+  std::array<bool, _KEYBOARD_SIZE> keyboard{};
+  Screen screen;
 };
 } // namespace chip_8
