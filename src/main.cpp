@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   auto app = Gtk::Application::create(APP_ID.data());
 
   auto program = read_binary(PROGRAM_PATH.data());
-  Emulator emulator{program | std::views::all};
+  Emulator emulator{std::move(program)};
 
   app->signal_activate().connect(sigc::bind(&on_app_activate, app, &emulator));
 

@@ -5,6 +5,7 @@
 #include "parser.hpp"
 
 #include <filesystem>
+#include <ranges>
 #include <vector>
 
 namespace chip_8 {
@@ -14,11 +15,11 @@ std::vector<uint8_t> read_binary(std::filesystem::path const &path);
 
 class Emulator {
 public:
-  constexpr Emulator() noexcept = default;
+  Emulator() noexcept;
 
-  constexpr Emulator(std::ranges::view auto &&program) : cpu(program) {}
+  constexpr Emulator(std::ranges::input_range auto &&program) : cpu(program) {}
 
-  void constexpr load_program(std::ranges::view auto &&program) {
+  void constexpr load_program(std::ranges::input_range auto &&program) {
     cpu = Cpu{program};
   }
 

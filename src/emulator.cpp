@@ -1,6 +1,7 @@
 #include "emulator.hpp"
 
 #include <fstream>
+#include <functional>
 
 using namespace chip_8;
 
@@ -11,12 +12,14 @@ std::vector<uint8_t> chip_8::read_binary(std::filesystem::path const &path) {
   return std::vector<uint8_t>(it, end);
 }
 
+Emulator::Emulator() noexcept = default;
+
 bool Emulator::step() {
   auto instruction = fetch_instruction(cpu.program_counter);
   cpu.step_program_counter();
 
   if (instruction) {
-    instruction->get()->operator()(cpu);
+    std::invoke(**instruction, cpu);
     return true;
   }
 

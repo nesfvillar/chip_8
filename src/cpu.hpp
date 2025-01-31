@@ -17,7 +17,7 @@ class Cpu {
 public:
   constexpr Cpu() noexcept = default;
 
-  constexpr Cpu(std::ranges::range auto &&program) {
+  constexpr Cpu(std::ranges::input_range auto &&program) {
     std::ranges::move(program, memory.begin() + _PROGRAM_START);
   }
 
